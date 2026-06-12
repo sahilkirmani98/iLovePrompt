@@ -1,43 +1,489 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>iLovePrompt - Portrait AI Studio</title>
-    
-    <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
-    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
-    
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>iLovePrompt — AI Portrait Transformation</title>
+  <meta name="description" content="Precision-engineered AI prompts that preserve your identity while transforming your portrait into any aesthetic." />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-            background-color: #06060f;
-            overflow-x: hidden;
-        }
-    </style>
+    :root {
+      --bg: #06060f;
+      --surface: #0c0c1a;
+      --border: rgba(255,255,255,0.07);
+      --text: #f1f5f9;
+      --muted: #64748b;
+      --faint: #1e293b;
+      --indigo: #6366f1;
+      --purple: #a855f7;
+      --pink: #ec4899;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ── AMBIENT ── */
+    #ambient {
+      position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden;
+    }
+    .orb1 {
+      position: absolute; width: 700px; height: 700px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(99,102,241,0.13) 0%, transparent 70%);
+      top: -250px; left: 50%; transform: translateX(-50%);
+      animation: orb1 9s ease-in-out infinite alternate;
+    }
+    .orb2 {
+      position: absolute; width: 500px; height: 500px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(168,85,247,0.09) 0%, transparent 70%);
+      bottom: 5%; right: -10%;
+      animation: orb2 11s ease-in-out infinite alternate;
+    }
+    #grid-svg { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0.03; }
+
+    /* ── HEADER ── */
+    header {
+      position: sticky; top: 0; z-index: 100;
+      border-bottom: 1px solid var(--border);
+      background: rgba(6,6,15,0.88);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+    }
+    .header-inner {
+      max-width: 1280px; margin: 0 auto; padding: 0 24px;
+      height: 64px; display: flex; align-items: center; justify-content: space-between; gap: 16px;
+    }
+    .logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+    .logo-icon {
+      width: 36px; height: 36px; border-radius: 10px;
+      background: linear-gradient(135deg, var(--indigo), var(--purple));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px; color: #fff; font-weight: 900;
+      box-shadow: 0 0 24px rgba(99,102,241,0.5);
+      flex-shrink: 0;
+    }
+    .logo-name { font-size: 16px; font-weight: 800; letter-spacing: -0.03em; color: #fff; }
+    .logo-sub { font-size: 9px; font-family: monospace; color: var(--muted); letter-spacing: 0.15em; text-transform: uppercase; margin-top: -1px; }
+    .header-badge {
+      display: flex; align-items: center; gap: 8px;
+      padding: 6px 14px; border-radius: 100px;
+      border: 1px solid rgba(99,102,241,0.3);
+      background: rgba(99,102,241,0.06);
+    }
+    .header-badge-dot {
+      width: 5px; height: 5px; border-radius: 50%;
+      background: #818cf8; animation: shimmer 2s ease infinite;
+    }
+    .header-badge span { font-size: 10px; font-family: monospace; color: #818cf8; letter-spacing: 0.1em; }
+    .header-count { font-size: 10px; font-family: monospace; color: var(--faint); letter-spacing: 0.05em; white-space: nowrap; }
+
+    /* ── MAIN ── */
+    main {
+      max-width: 1280px; margin: 0 auto;
+      padding: 0 24px 80px;
+      position: relative; z-index: 1;
+    }
+
+    /* ── HERO ── */
+    .hero {
+      text-align: center; padding: 72px 0 60px;
+      animation: fadeUp 0.6s ease both;
+    }
+    .hero-pill {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 6px 18px; border-radius: 100px;
+      border: 1px solid rgba(168,85,247,0.3);
+      background: rgba(168,85,247,0.06);
+      margin-bottom: 28px;
+    }
+    .hero-pill span:first-child { font-size: 12px; }
+    .hero-pill span:last-child { font-size: 10px; font-family: monospace; color: #c084fc; letter-spacing: 0.15em; text-transform: uppercase; }
+    h1 {
+      font-size: clamp(38px, 7vw, 70px);
+      font-weight: 900; letter-spacing: -0.04em;
+      line-height: 1.05; margin: 0 0 20px; color: #fff;
+    }
+    h1 .gradient-text {
+      background: linear-gradient(135deg, var(--indigo) 0%, var(--purple) 50%, var(--pink) 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero-p {
+      font-size: clamp(14px, 2vw, 17px); color: var(--muted);
+      max-width: 560px; margin: 0 auto 40px; line-height: 1.7;
+    }
+    .steps-row { display: flex; justify-content: center; flex-wrap: wrap; gap: 4px; align-items: center; }
+    .step-item {
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px 20px; border-radius: 12px;
+      background: rgba(255,255,255,0.02);
+      border: 1px solid rgba(255,255,255,0.06);
+      margin: 4px;
+    }
+    .step-icon {
+      width: 28px; height: 28px; border-radius: 8px;
+      background: linear-gradient(135deg, var(--indigo), var(--purple));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px; color: #fff; flex-shrink: 0;
+    }
+    .step-item span { font-size: 12px; color: #94a3b8; font-weight: 500; }
+    .step-arrow { font-size: 18px; color: var(--faint); margin: 0 -2px; }
+
+    /* ── FILTER ── */
+    .filter-row {
+      display: flex; align-items: center; gap: 8px;
+      margin-bottom: 32px; flex-wrap: wrap;
+    }
+    .filter-label { font-size: 10px; font-family: monospace; color: #334155; letter-spacing: 0.15em; text-transform: uppercase; margin-right: 4px; }
+    .filter-count { font-size: 10px; font-family: monospace; color: #334155; margin-left: auto; }
+    .pill-btn {
+      padding: 6px 16px; border-radius: 100px; cursor: pointer;
+      font-size: 10px; font-family: monospace; letter-spacing: 0.12em;
+      text-transform: uppercase; font-weight: 700; border: none; outline: none;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.02);
+      color: #475569;
+      transition: all 0.2s ease;
+    }
+    .pill-btn:hover { border-color: rgba(255,255,255,0.18); color: #94a3b8; }
+    .pill-btn.active {
+      background: linear-gradient(135deg, var(--indigo), #7c3aed);
+      border-color: var(--indigo);
+      color: #fff;
+      box-shadow: 0 0 20px rgba(99,102,241,0.4);
+    }
+
+    /* ── GRID ── */
+    #cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 20px;
+    }
+
+    /* ── CARD ── */
+    .style-card {
+      border-radius: 20px; overflow: hidden; cursor: pointer;
+      border: 1px solid rgba(255,255,255,0.06);
+      background: #0a0a14;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.03);
+      transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.3s ease, border-color 0.3s ease;
+      position: relative;
+    }
+    .style-card:hover {
+      transform: translateY(-3px);
+      border-color: rgba(255,255,255,0.12);
+    }
+    .style-card.selected { transform: translateY(-4px) scale(1.01); }
+    .card-img-wrap { position: relative; aspect-ratio: 3/4; overflow: hidden; }
+    .card-img-wrap img {
+      width: 100%; height: 100%; object-fit: cover; display: block;
+      transition: transform 0.5s ease;
+    }
+    .style-card:hover .card-img-wrap img,
+    .style-card.selected .card-img-wrap img { transform: scale(1.06); }
+    .card-img-gradient {
+      position: absolute; inset: 0;
+      background: linear-gradient(to top, #0a0a14 0%, rgba(10,10,20,0.35) 50%, transparent 100%);
+      pointer-events: none;
+    }
+    .card-aura {
+      position: absolute; inset: 0; opacity: 0;
+      transition: opacity 0.4s ease; pointer-events: none;
+    }
+    .style-card:hover .card-aura,
+    .style-card.selected .card-aura { opacity: 1; }
+    .card-badge {
+      position: absolute; top: 12px; left: 12px;
+      background: rgba(0,0,0,0.6);
+      backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+      border-radius: 100px;
+      padding: 4px 10px;
+      display: flex; align-items: center; gap: 5px;
+      border-width: 1px; border-style: solid;
+    }
+    .badge-dot { width: 5px; height: 5px; border-radius: 50%; }
+    .badge-text { font-size: 9px; letter-spacing: 0.15em; font-family: monospace; font-weight: 700; text-transform: uppercase; }
+    .card-check {
+      position: absolute; top: 12px; right: 12px;
+      width: 28px; height: 28px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px; color: #000; font-weight: 900;
+      display: none; animation: fadeUp 0.25s ease;
+    }
+    .style-card.selected .card-check { display: flex; }
+    .card-body { padding: 16px 18px 18px; }
+    .card-title { font-size: 15px; font-weight: 700; color: #f1f5f9; margin-bottom: 4px; letter-spacing: -0.02em; }
+    .card-tagline { font-size: 11px; color: var(--muted); font-style: italic; margin-bottom: 14px; }
+    .card-cta {
+      display: flex; align-items: center; gap: 8px;
+      padding: 8px 12px; border-radius: 8px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.06);
+      transition: all 0.3s ease;
+    }
+    .style-card.selected .card-cta { background: rgba(255,255,255,0.06); }
+    .cta-dot { width: 6px; height: 6px; border-radius: 50%; transition: box-shadow 0.3s ease; }
+    .style-card.selected .cta-dot { animation: shimmer 1.5s ease infinite; }
+    .cta-text { font-size: 9px; font-family: monospace; letter-spacing: 0.15em; text-transform: uppercase; font-weight: 700; color: #475569; transition: color 0.3s; }
+    .style-card.selected .cta-text { color: var(--accent); }
+
+    /* ── PROMPT PANEL ── */
+    #prompt-panel {
+      margin-top: 32px; border-radius: 24px; overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: linear-gradient(145deg, #0c0c1a 0%, #08080f 100%);
+      display: none;
+      animation: slideIn 0.35s cubic-bezier(0.34,1.2,0.64,1) both;
+    }
+    #prompt-panel.visible { display: block; }
+    .panel-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 18px 24px;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      background: rgba(255,255,255,0.02);
+    }
+    .panel-header-left { display: flex; align-items: center; gap: 12px; }
+    .panel-dot { width: 10px; height: 10px; border-radius: 50%; }
+    .panel-title { font-size: 15px; font-weight: 700; color: #f1f5f9; letter-spacing: -0.02em; }
+    .panel-subtitle { font-size: 10px; font-family: monospace; color: #475569; letter-spacing: 0.1em; text-transform: uppercase; margin-top: 1px; }
+    .panel-close {
+      width: 32px; height: 32px; border-radius: 50%;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.04);
+      color: var(--muted); font-size: 14px; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.2s; flex-shrink: 0;
+    }
+    .panel-close:hover { background: rgba(255,255,255,0.08); color: #f1f5f9; }
+    .panel-body { display: flex; min-height: 420px; }
+    .panel-left { width: 38%; min-width: 200px; position: relative; flex-shrink: 0; }
+    .panel-left img { width: 100%; height: 100%; min-height: 420px; object-fit: cover; display: block; }
+    .panel-left-overlay {
+      position: absolute; inset: 0; pointer-events: none;
+      background: linear-gradient(to right, transparent 50%, #0c0c1a 100%), linear-gradient(to top, #0c0c1a 0%, transparent 50%);
+    }
+    .panel-left-aura { position: absolute; inset: 0; pointer-events: none; opacity: 0.15; }
+    .panel-steps { position: absolute; bottom: 0; left: 0; right: 0; padding: 20px; }
+    .panel-steps-label { font-size: 9px; font-family: monospace; letter-spacing: 0.15em; text-transform: uppercase; font-weight: 700; margin-bottom: 10px; }
+    .panel-step { display: flex; align-items: flex-start; gap: 8px; margin-bottom: 7px; }
+    .panel-step-n {
+      width: 16px; height: 16px; border-radius: 50%; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 8px; font-family: monospace; font-weight: 700;
+      border-width: 1px; border-style: solid;
+    }
+    .panel-step span { font-size: 10px; color: rgba(255,255,255,0.6); line-height: 1.5; }
+    .panel-right { flex: 1; display: flex; flex-direction: column; border-left: 1px solid rgba(255,255,255,0.05); min-width: 0; }
+    .panel-tabs {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 12px 20px; border-bottom: 1px solid rgba(255,255,255,0.05); flex-wrap: wrap; gap: 8px;
+    }
+    .tab-group { display: flex; gap: 4px; }
+    .tab-btn {
+      padding: 5px 14px; border-radius: 8px; cursor: pointer;
+      font-size: 10px; font-family: monospace; letter-spacing: 0.1em;
+      text-transform: uppercase; font-weight: 700;
+      border: 1px solid transparent;
+      background: transparent; color: #475569;
+      transition: all 0.2s;
+    }
+    .tab-btn.active { color: var(--tab-color); border-color: var(--tab-border); background: var(--tab-bg); }
+    .copy-btn {
+      display: flex; align-items: center; gap: 8px;
+      padding: 8px 20px; border-radius: 10px; cursor: pointer;
+      font-size: 10px; font-family: monospace; letter-spacing: 0.12em;
+      text-transform: uppercase; font-weight: 800;
+      transition: all 0.3s cubic-bezier(0.34,1.56,0.64,1);
+      white-space: nowrap;
+    }
+    .copy-btn .copy-icon { font-size: 14px; }
+    .panel-content { flex: 1; overflow-y: auto; padding: 20px; max-height: 360px; }
+    pre#prompt-text {
+      font-family: monospace; font-size: 11px; line-height: 1.9;
+      color: #94a3b8; white-space: pre-wrap; word-break: break-word;
+    }
+    pre#prompt-text .prompt-title { font-weight: 700; }
+    #tips-content { display: none; flex-direction: column; gap: 12px; }
+    .tip-card {
+      padding: 12px 14px; border-radius: 10px;
+      background: rgba(255,255,255,0.02);
+      border: 1px solid rgba(255,255,255,0.05);
+    }
+    .tip-header { display: flex; align-items: center; gap: 8px; margin-bottom: 5px; }
+    .tip-title { font-size: 11px; font-weight: 700; color: #e2e8f0; }
+    .tip-body { font-size: 11px; color: var(--muted); line-height: 1.6; }
+
+    /* ── FOOTER ── */
+    footer {
+      max-width: 1280px; margin: 80px auto 0; padding: 32px 24px 40px;
+      border-top: 1px solid rgba(255,255,255,0.04);
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 12px; position: relative; z-index: 1;
+    }
+    .footer-logo { display: flex; align-items: center; gap: 8px; }
+    .footer-logo-icon {
+      width: 24px; height: 24px; border-radius: 6px;
+      background: linear-gradient(135deg, var(--indigo), var(--purple));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px; color: #fff;
+    }
+    .footer-logo span { font-size: 12px; color: #334155; font-weight: 600; }
+    footer p { font-size: 10px; font-family: monospace; color: #1e293b; letter-spacing: 0.1em; }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
+    @keyframes shimmer { 0%,100% { opacity:0.5; } 50% { opacity:1; } }
+    @keyframes slideIn { from { opacity:0; transform:translateY(28px) scale(0.98); } to { opacity:1; transform:translateY(0) scale(1); } }
+    @keyframes orb1 { from { transform:translateX(-50%) scale(1); } to { transform:translateX(-50%) scale(1.15); } }
+    @keyframes orb2 { from { transform:scale(1); } to { transform:scale(1.2) translate(-20px,-30px); } }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 640px) {
+      .header-badge { display: none; }
+      h1 { letter-spacing: -0.03em; }
+      .panel-body { flex-direction: column; }
+      .panel-left { width: 100%; min-width: unset; }
+      .panel-left img { min-height: 240px; max-height: 300px; }
+      .panel-left-overlay { background: linear-gradient(to top, #0c0c1a 0%, transparent 60%); }
+      #cards-grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; }
+    }
+    @media (max-width: 400px) {
+      #cards-grid { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
 </head>
 <body>
 
-    <div id="root"></div>
+<!-- Ambient background -->
+<div id="ambient">
+  <div class="orb1"></div>
+  <div class="orb2"></div>
+  <svg id="grid-svg"><defs><pattern id="g" width="60" height="60" patternUnits="userSpaceOnUse"><path d="M60 0L0 0 0 60" fill="none" stroke="#6366f1" stroke-width="0.5"/></pattern></defs><rect width="100%" height="100%" fill="url(#g)"/></svg>
+</div>
 
-    <script type="text/babel">
-        const { useState, useCallback, useEffect } = React;
+<!-- Header -->
+<header>
+  <div class="header-inner">
+    <a class="logo" href="#">
+      <div class="logo-icon">✦</div>
+      <div>
+        <div class="logo-name">iLovePrompt</div>
+        <div class="logo-sub">Portrait AI</div>
+      </div>
+    </a>
+    <div class="header-badge">
+      <div class="header-badge-dot"></div>
+      <span>ZERO API · 100% CLIENT-SIDE · FREE FOREVER</span>
+    </div>
+    <div class="header-count" id="style-count">8 Styles Available</div>
+  </div>
+</header>
 
-        // ─── PROMPT DATA ─────────────────────────────────────────────────────────────
-        const STYLES = [
-          {
-            id: "cyberpunk",
-            title: "Cyberpunk Neon",
-            category: "Cinematic",
-            tagline: "Rain-slicked streets. Electric soul.",
-            color: "#00f5ff",
-            glow: "rgba(0,245,255,0.4)",
-            bg: "linear-gradient(135deg,#000d1a 0%,#001a2e 100%)",
-            image: "https://images.unsplash.com/photo-1542327897-d73f4005b533?w=600&q=80",
-            prompt: `[MULTI-MODAL PORTRAIT TRANSFORMATION — CYBERPUNK NEON]
+<!-- Main -->
+<main>
+  <!-- Hero -->
+  <div class="hero">
+    <div class="hero-pill"><span>✦</span><span>Your face, preserved. The world, transformed.</span></div>
+    <h1>Pick a style.&nbsp;<span class="gradient-text">Copy the prompt.</span><br>Transform yourself.</h1>
+    <p class="hero-p">Precision-engineered AI prompts that preserve your identity while transforming your portrait into any aesthetic. Works with ChatGPT, Gemini, and Claude.</p>
+    <div class="steps-row">
+      <div class="step-item"><div class="step-icon">◉</div><span>Choose a style</span></div>
+      <div class="step-arrow">→</div>
+      <div class="step-item"><div class="step-icon">⎘</div><span>Copy the prompt</span></div>
+      <div class="step-arrow">→</div>
+      <div class="step-item"><div class="step-icon">✦</div><span>Paste + upload photo</span></div>
+    </div>
+  </div>
+
+  <!-- Filter -->
+  <div class="filter-row" id="filter-row">
+    <span class="filter-label">Filter:</span>
+    <button class="pill-btn active" data-cat="All">All</button>
+    <button class="pill-btn" data-cat="Cinematic">Cinematic</button>
+    <button class="pill-btn" data-cat="Fantasy">Fantasy</button>
+    <button class="pill-btn" data-cat="Editorial">Editorial</button>
+    <button class="pill-btn" data-cat="Artistic">Artistic</button>
+    <span class="filter-count" id="filter-count">8 styles</span>
+  </div>
+
+  <!-- Cards grid -->
+  <div id="cards-grid"></div>
+
+  <!-- Prompt panel -->
+  <div id="prompt-panel">
+    <div class="panel-header">
+      <div class="panel-header-left">
+        <div class="panel-dot" id="panel-dot"></div>
+        <div>
+          <div class="panel-title" id="panel-title"></div>
+          <div class="panel-subtitle">Multi-Modal Prompt Script · Identity Preserved</div>
+        </div>
+      </div>
+      <button class="panel-close" id="panel-close">✕</button>
+    </div>
+    <div class="panel-body">
+      <div class="panel-left">
+        <img id="panel-img" src="" alt="" />
+        <div class="panel-left-overlay"></div>
+        <div class="panel-left-aura" id="panel-aura"></div>
+        <div class="panel-steps">
+          <div class="panel-steps-label" id="panel-steps-label">How to use</div>
+          <div class="panel-step"><div class="panel-step-n" id="pn1">1</div><span>Copy the prompt below</span></div>
+          <div class="panel-step"><div class="panel-step-n" id="pn2">2</div><span>Open ChatGPT, Gemini, or Claude</span></div>
+          <div class="panel-step"><div class="panel-step-n" id="pn3">3</div><span>Upload your portrait photo</span></div>
+          <div class="panel-step"><div class="panel-step-n" id="pn4">4</div><span>Paste prompt alongside it</span></div>
+        </div>
+      </div>
+      <div class="panel-right">
+        <div class="panel-tabs">
+          <div class="tab-group">
+            <button class="tab-btn active" data-tab="prompt">Prompt</button>
+            <button class="tab-btn" data-tab="tips">Tips</button>
+          </div>
+          <button class="copy-btn" id="copy-btn">
+            <span class="copy-icon">⎘</span>
+            <span class="copy-label">Copy Prompt</span>
+          </button>
+        </div>
+        <div class="panel-content">
+          <pre id="prompt-text"></pre>
+          <div id="tips-content">
+            <div class="tip-card"><div class="tip-header"><span>🔒</span><span class="tip-title">Identity Lock</span></div><p class="tip-body">These prompts are engineered to preserve your facial structure. The AI reads your face as a "locked layer" — only the environment and aesthetic transforms.</p></div>
+            <div class="tip-card"><div class="tip-header"><span>🎯</span><span class="tip-title">Best Models</span></div><p class="tip-body">Works best with GPT-4o, Gemini 1.5 Pro, and Claude 3.5 Sonnet (multimodal). Upload your photo first, then paste the prompt.</p></div>
+            <div class="tip-card"><div class="tip-header"><span>📸</span><span class="tip-title">Photo Tips</span></div><p class="tip-body">Use a high-quality frontal portrait with good lighting. Clear face visibility = better identity preservation in the output.</p></div>
+            <div class="tip-card"><div class="tip-header"><span>⚡</span><span class="tip-title">Iterate Fast</span></div><p class="tip-body">If the first result isn't perfect, add "Pay special attention to preserving the subject's exact facial features" at the end of the prompt.</p></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- Footer -->
+<footer>
+  <div class="footer-logo">
+    <div class="footer-logo-icon">✦</div>
+    <span>iLovePrompt</span>
+  </div>
+  <p>WORKS WITH CHATGPT · GEMINI · CLAUDE · GROK</p>
+  <p>NO BACKEND · FREE FOREVER</p>
+</footer>
+
+<script>
+const STYLES = [
+  {
+    id:"cyberpunk", title:"Cyberpunk Neon", category:"Cinematic",
+    tagline:"Rain-slicked streets. Electric soul.",
+    color:"#00f5ff", glow:"rgba(0,245,255,0.4)",
+    image:"https://images.unsplash.com/photo-1542327897-d73f4005b533?w=600&q=80",
+    prompt:`[MULTI-MODAL PORTRAIT TRANSFORMATION — CYBERPUNK NEON]
 
 IDENTITY PRESERVATION DIRECTIVE:
 The subject's facial geometry, bone structure, eye shape, nose profile, lip form, and all unique identifying features must remain 100% faithful to the uploaded reference photo. Do not alter, beautify, or normalize any facial features. Treat the face as a locked layer.
@@ -53,18 +499,14 @@ High-collar black leather jacket with holographic trim. Skin: ultra-sharp photor
 
 COMPOSITION: 3:4 portrait. Eyes at upper third line. Subject fills 60% of frame.
 
-OUTPUT MOOD: Blade Runner 2049 × Ghost in the Shell. Cinematic, lonely, electric.`,
-          },
-          {
-            id: "claymation",
-            title: "3D Claymation",
-            category: "Fantasy",
-            tagline: "Handcrafted warmth. Infinite charm.",
-            color: "#ff9500",
-            glow: "rgba(255,149,0,0.4)",
-            bg: "linear-gradient(135deg,#1a0a00 0%,#2e1500 100%)",
-            image: "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=600&q=80",
-            prompt: `[MULTI-MODAL PORTRAIT TRANSFORMATION — 3D CLAYMATION]
+OUTPUT MOOD: Blade Runner 2049 × Ghost in the Shell. Cinematic, lonely, electric.`
+  },
+  {
+    id:"claymation", title:"3D Claymation", category:"Fantasy",
+    tagline:"Handcrafted warmth. Infinite charm.",
+    color:"#ff9500", glow:"rgba(255,149,0,0.4)",
+    image:"https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=600&q=80",
+    prompt:`[MULTI-MODAL PORTRAIT TRANSFORMATION — 3D CLAYMATION]
 
 IDENTITY PRESERVATION DIRECTIVE:
 Slight softening of sharp edges is acceptable as a byproduct of the clay medium, but preserve all facial proportions — interocular distance, nose length, lip fullness, ear shape, jawline — faithfully translated into the new material. The person must be immediately recognizable. No caricature exaggeration.
@@ -78,18 +520,14 @@ Skin: matte clay in the subject's accurate tone with fingerprint micro-texture. 
 ENVIRONMENT:
 A cozy miniature world — small wooden shelf, tiny potted succulents, miniature bookshelf with clay book spines, warm incandescent light from a tiny clay lamp.
 
-OUTPUT MOOD: Laika Studios × Aardman. Warmth, craft, handmade soul.`,
-          },
-          {
-            id: "editorial",
-            title: "Editorial Fashion",
-            category: "Editorial",
-            tagline: "Vogue-ready. Architecturally lit.",
-            color: "#e8e8e8",
-            glow: "rgba(232,232,232,0.3)",
-            bg: "linear-gradient(135deg,#0d0d0d 0%,#1a1a1a 100%)",
-            image: "https://images.unsplash.com/photo-1509631179647-0177331693ae?w=600&q=80",
-            prompt: `[MULTI-MODAL PORTRAIT TRANSFORMATION — EDITORIAL STUDIO FASHION]
+OUTPUT MOOD: Laika Studios × Aardman. Warmth, craft, handmade soul.`
+  },
+  {
+    id:"editorial", title:"Editorial Fashion", category:"Editorial",
+    tagline:"Vogue-ready. Architecturally lit.",
+    color:"#e8e8e8", glow:"rgba(232,232,232,0.3)",
+    image:"https://images.unsplash.com/photo-1509631179647-0177331693ae?w=600&q=80",
+    prompt:`[MULTI-MODAL PORTRAIT TRANSFORMATION — EDITORIAL STUDIO FASHION]
 
 IDENTITY PRESERVATION DIRECTIVE:
 Skin texture, freckles, asymmetry, and unique facial geometry are editorial assets — preserve them completely. Do not apply beauty filters, skin smoothing, or feature correction of any kind. This is photojournalistic fidelity in a fashion context.
@@ -98,7 +536,7 @@ PHOTOGRAPHIC PARAMETERS:
 Simulate a Hasselblad H6D with 80mm portrait lens, f/2.8, shooting on seamless white cyclorama. The image belongs between the pages of Italian Vogue or AnOther Magazine.
 
 LIGHTING SCHEMA:
-One large Profoto 7-foot octabank at 45° above-left. No fill — natural shadow falloff creates sculptural face definition. A subtle silver reflector provides the only bounce from below-right. The result: dramatic Rembrandt-adjacent lighting with fashion-forward sensibility.
+One large Profoto 7-foot octabank at 45° above-left. No fill — natural shadow falloff creates sculptural face definition. A subtle silver reflector provides the only bounce from below-right. Result: dramatic Rembrandt-adjacent lighting with fashion-forward sensibility.
 
 STYLING:
 Architectural oversized black wool coat, sharp lapels, no pattern, no logo. No jewelry. Expression: direct gaze, calm authority, no smile.
@@ -106,18 +544,14 @@ Architectural oversized black wool coat, sharp lapels, no pattern, no logo. No j
 POSTPROCESSING:
 Slightly desaturated skin tones. Elevated blacks. Ultra-sharp midtones. Film-shot aesthetic, not digital.
 
-OUTPUT MOOD: Helmut Newton × Peter Lindbergh. Power, restraint, precision.`,
-          },
-          {
-            id: "oilpainting",
-            title: "Fine Art Oil",
-            category: "Artistic",
-            tagline: "Flemish masters. Living canvas.",
-            color: "#d4a054",
-            glow: "rgba(212,160,84,0.4)",
-            bg: "linear-gradient(135deg,#0f0800 0%,#1e1000 100%)",
-            image: "https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?w=600&q=80",
-            prompt: `[MULTI-MODAL PORTRAIT TRANSFORMATION — FINE ART OIL PAINTING]
+OUTPUT MOOD: Helmut Newton × Peter Lindbergh. Power, restraint, precision.`
+  },
+  {
+    id:"oilpainting", title:"Fine Art Oil", category:"Artistic",
+    tagline:"Flemish masters. Living canvas.",
+    color:"#d4a054", glow:"rgba(212,160,84,0.4)",
+    image:"https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?w=600&q=80",
+    prompt:`[MULTI-MODAL PORTRAIT TRANSFORMATION — FINE ART OIL PAINTING]
 
 IDENTITY PRESERVATION DIRECTIVE:
 You are translating the subject into a painted medium with commission-portrait faithfulness. Every distinguishing characteristic — curvature of the nose, the specific set of the eyes, the exact mouth shape — must be maintained. The result must be unmistakably this person, rendered in oil.
@@ -128,22 +562,18 @@ Dutch Golden Age / Flemish Baroque (circa 1630–1670). The visual grammar of Re
 PAINT RENDERING:
 Skin built in visible glazing layers — raw umber underpainting showing through warm flesh-tone upper layers. Impasto texture on highlighted areas (forehead, nose tip, cheekbone). Visible individual brushstrokes in hair, cloth, background. Canvas linen-weave grain pressing through every passage.
 
-LIGHTING: Single natural north-light source from the left. Classic Dutch chiaroscuro — the unlit side dissolving into warm shadow.
+LIGHTING: Single natural north-light source from left. Classic Dutch chiaroscuro — the unlit side dissolving into warm shadow.
 
 FRAME SIMULATION: Add aged gilt frame suggestion at image border.
 
-OUTPUT MOOD: Rijksmuseum permanent collection. Gravitas, humanity, timelessness.`,
-          },
-          {
-            id: "anime",
-            title: "Anime Cel Portrait",
-            category: "Fantasy",
-            tagline: "Studio-grade. Unmistakably you.",
-            color: "#ff4eb8",
-            glow: "rgba(255,78,184,0.4)",
-            bg: "linear-gradient(135deg,#0d001a 0%,#1a0033 100%)",
-            image: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=600&q=80",
-            prompt: `[MULTI-MODAL PORTRAIT TRANSFORMATION — ANIME CEL PORTRAIT]
+OUTPUT MOOD: Rijksmuseum permanent collection. Gravitas, humanity, timelessness.`
+  },
+  {
+    id:"anime", title:"Anime Cel Portrait", category:"Fantasy",
+    tagline:"Studio-grade. Unmistakably you.",
+    color:"#ff4eb8", glow:"rgba(255,78,184,0.4)",
+    image:"https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=600&q=80",
+    prompt:`[MULTI-MODAL PORTRAIT TRANSFORMATION — ANIME CEL PORTRAIT]
 
 IDENTITY PRESERVATION DIRECTIVE:
 The subject's most identifying features — eye shape, nose, lip form, facial structure, distinguishing marks — must be faithfully translated into the anime visual language. Do not default to generic anime eyes or simplified features. This person must be recognizable in the final result.
@@ -161,18 +591,14 @@ EYES: Adapted to anime proportion but maintaining the subject's unique eye shape
 
 BACKGROUND: Soft bokeh light particles on a twilight blue-to-purple gradient.
 
-OUTPUT MOOD: Demon Slayer × Your Name visual quality. Emotion, craft, identity.`,
-          },
-          {
-            id: "watercolor",
-            title: "Watercolor Botanica",
-            category: "Artistic",
-            tagline: "Ink blooms. Soft as morning.",
-            color: "#4ade80",
-            glow: "rgba(74,222,128,0.35)",
-            bg: "linear-gradient(135deg,#001a0d 0%,#002e1a 100%)",
-            image: "https://images.unsplash.com/photo-1557804506-669a67965ba0?w=600&q=80",
-            prompt: `[MULTI-MODAL PORTRAIT TRANSFORMATION — WATERCOLOR BOTANICA]
+OUTPUT MOOD: Demon Slayer × Your Name visual quality. Emotion, craft, identity.`
+  },
+  {
+    id:"watercolor", title:"Watercolor Botanica", category:"Artistic",
+    tagline:"Ink blooms. Soft as morning.",
+    color:"#4ade80", glow:"rgba(74,222,128,0.35)",
+    image:"https://images.unsplash.com/photo-1557804506-669a67965ba0?w=600&q=80",
+    prompt:`[MULTI-MODAL PORTRAIT TRANSFORMATION — WATERCOLOR BOTANICA]
 
 IDENTITY PRESERVATION DIRECTIVE:
 Watercolor introduces natural softening. Within those constraints, the subject's fundamental facial structure — proportions, eye placement, nose and lip form — must remain recognizable. The face receives more detail and restraint than surrounding botanical elements.
@@ -181,31 +607,27 @@ MEDIUM SIMULATION:
 Authentic wet-on-wet and wet-on-dry watercolor on cold-press Arches 300gsm paper. Paper texture visible throughout — rough tooth catching pigment at unpredictable micro-points. Water blooms (backruns, cauliflower effects, tide marks) visible and intentional in background and foliage passages.
 
 PORTRAIT TECHNIQUE:
-The face rendered in controlled washes, wet-on-dry for sharp detail in eyes and lips, granulating pigments (ultramarine, burnt sienna) for skin passages. Lost and found edges: some face edges dissolve into the surrounding botanical wash; others are crisply defined.
+Face rendered in controlled washes, wet-on-dry for sharp detail in eyes and lips, granulating pigments (ultramarine, burnt sienna) for skin passages. Lost and found edges: some face edges dissolve into surrounding botanical wash; others are crisply defined.
 
 BOTANICAL INTEGRATION:
 Subject emerges from overscale botanical elements: peonies, Japanese anemone, fern fronds, eucalyptus stems. Painted with wet-on-wet abandon — blooming, flowing, color-mixing directly on page. Palette: sage green, warm rose, dusty mauve, golden ochre, deep forest.
 
 BACKGROUND: White paper preserved in passages — the composition breathes.
 
-OUTPUT MOOD: Sargent botanical studies × contemporary illustration. Alive, loose, luminous.`,
-          },
-          {
-            id: "synthwave",
-            title: "Retrowave Synthwave",
-            category: "Editorial",
-            tagline: "1987 never looked this good.",
-            color: "#ff2d78",
-            glow: "rgba(255,45,120,0.4)",
-            bg: "linear-gradient(135deg,#0d0020 0%,#200040 100%)",
-            image: "https://images.unsplash.com/photo-1518609571773-39b7d303a87b?w=600&q=80",
-            prompt: `[MULTI-MODAL PORTRAIT TRANSFORMATION — RETROWAVE SYNTHWAVE]
+OUTPUT MOOD: Sargent botanical studies × contemporary illustration. Alive, loose, luminous.`
+  },
+  {
+    id:"synthwave", title:"Retrowave Synthwave", category:"Editorial",
+    tagline:"1987 never looked this good.",
+    color:"#ff2d78", glow:"rgba(255,45,120,0.4)",
+    image:"https://images.unsplash.com/photo-1518609571773-39b7d303a87b?w=600&q=80",
+    prompt:`[MULTI-MODAL PORTRAIT TRANSFORMATION — RETROWAVE SYNTHWAVE]
 
 IDENTITY PRESERVATION DIRECTIVE:
 The subject's face must survive the aesthetic transformation intact. The Synthwave aesthetic is about environment, color palette, and light — not about altering the person. Maintain all facial features, proportions, and unique identifiers with precision.
 
 ERA & AESTHETIC:
-Hyper-stylized interpretation of 1980s retrofuturism through the modern Outrun / Synthwave visual movement. Kavinsky artwork, the Drive (2011) poster, Hotline Miami visual language. Not a lo-fi retro filter — a cinematic, ultra-high-resolution evocation.
+Hyper-stylized interpretation of 1980s retrofuturism through the modern Outrun / Synthwave visual movement. Kavinsky artwork, Drive (2011) poster, Hotline Miami visual language. Not a lo-fi retro filter — a cinematic, ultra-high-resolution evocation.
 
 ENVIRONMENT:
 Open desert highway at dusk. Horizon gradient: hot magenta at base bleeding through orange and violet into deep purple-black sky. Large full moon on the horizon. Receding neon-pink wireframe grid extends to horizon. Low silhouetted palm trees at frame sides.
@@ -218,18 +640,14 @@ Fine horizontal scan lines at 5% opacity across the full image (CRT reference).
 
 COLOR GRADE: Heavy teal/magenta split-tone. Crushed blacks. Glowing highlights. Extreme saturation in the magenta-cyan spectrum.
 
-OUTPUT MOOD: Stranger Things × Miami Vice × Outrun. Pure nostalgia weaponized.`,
-          },
-          {
-            id: "brutalist",
-            title: "Brutalist Concrete",
-            category: "Cinematic",
-            tagline: "Soviet geometry. Human defiance.",
-            color: "#a0a0a0",
-            glow: "rgba(160,160,160,0.3)",
-            bg: "linear-gradient(135deg,#080808 0%,#141414 100%)",
-            image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&q=80",
-            prompt: `[MULTI-MODAL PORTRAIT TRANSFORMATION — BRUTALIST ENVIRONMENT PORTRAIT]
+OUTPUT MOOD: Stranger Things × Miami Vice × Outrun. Pure nostalgia weaponized.`
+  },
+  {
+    id:"brutalist", title:"Brutalist Concrete", category:"Cinematic",
+    tagline:"Soviet geometry. Human defiance.",
+    color:"#a0a0a0", glow:"rgba(160,160,160,0.3)",
+    image:"https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&q=80",
+    prompt:`[MULTI-MODAL PORTRAIT TRANSFORMATION — BRUTALIST ENVIRONMENT PORTRAIT]
 
 IDENTITY PRESERVATION DIRECTIVE:
 The subject is the human focal point placed within an architectural environment. Their facial geometry, structure, and identifying features must remain completely unchanged. The transformation applies to the environment, lighting, and atmosphere — not the person.
@@ -245,112 +663,210 @@ Black and white, or deeply desaturated with slight warm sepia cast in highlights
 
 LIGHTING: Harsh overhead daylight from a single slot window. Hard shadows. No fill.
 
-OUTPUT MOOD: SOM Architecture × Sebastião Salgado. Monument, resistance, weight.`,
-          },
-        ];
+OUTPUT MOOD: SOM Architecture × Sebastião Salgado. Monument, resistance, weight.`
+  }
+];
 
-        const CATEGORIES = ["All", "Cinematic", "Fantasy", "Editorial", "Artistic"];
+// ── State ──────────────────────────────────────────────────────────────────
+let selectedId = null;
+let activeCategory = 'All';
+let activeTab = 'prompt';
 
-        // ─── PARTICLES BACKGROUND ─────────────────────────────────────────────────────
-        function Particles() {
-          return (
-            <div style={{ position: "fixed", inset: 0, pointerEvents: "none", zIndex: 0, overflow: "hidden" }}>
-              <div style={{
-                position: "absolute", width: 600, height: 600, borderRadius: "50%",
-                background: "radial-gradient(circle, rgba(99,102,241,0.12) 0%, transparent 70%)",
-                top: -200, left: "50%", transform: "translateX(-50%)",
-                animation: "orb1 8s ease-in-out infinite alternate"
-              }} />
-              <div style={{
-                position: "absolute", width: 400, height: 400, borderRadius: "50%",
-                background: "radial-gradient(circle, rgba(168,85,247,0.08) 0%, transparent 70%)",
-                bottom: "10%", right: "-10%",
-                animation: "orb2 10s ease-in-out infinite alternate"
-              }} />
-            </div>
-          );
-        }
+// ── Render cards ───────────────────────────────────────────────────────────
+function renderCards() {
+  const grid = document.getElementById('cards-grid');
+  const filtered = STYLES.filter(s => activeCategory === 'All' || s.category === activeCategory);
+  document.getElementById('filter-count').textContent = filtered.length + ' styles';
 
-        // ─── STYLE CARD ────────────────────────────────────────────────────────────────
-        function StyleCard({ style, isSelected, onClick }) {
-          const [hovered, setHovered] = useState(false);
+  grid.innerHTML = '';
+  filtered.forEach(style => {
+    const isSelected = selectedId === style.id;
+    const card = document.createElement('div');
+    card.className = 'style-card' + (isSelected ? ' selected' : '');
+    card.dataset.id = style.id;
+    card.style.cssText = isSelected
+      ? `border-color:${style.color}; box-shadow: 0 0 0 1px ${style.color}, 0 20px 60px -10px ${style.glow}, inset 0 1px 0 rgba(255,255,255,0.05);`
+      : '';
+    card.innerHTML = `
+      <div class="card-img-wrap">
+        <img src="${style.image}" alt="${style.title}" loading="lazy" />
+        <div class="card-img-gradient"></div>
+        <div class="card-aura" style="background:linear-gradient(135deg,${style.color}22 0%,transparent 60%)"></div>
+        <div class="card-badge" style="border-color:${style.color}50">
+          <div class="badge-dot" style="background:${style.color};box-shadow:0 0 6px ${style.color}"></div>
+          <span class="badge-text" style="color:${style.color}">${style.category}</span>
+        </div>
+        <div class="card-check" style="background:${style.color};box-shadow:0 0 20px ${style.glow}">✓</div>
+      </div>
+      <div class="card-body">
+        <div class="card-title">${style.title}</div>
+        <div class="card-tagline">${style.tagline}</div>
+        <div class="card-cta" style="${isSelected ? 'background:'+style.color+'18;border-color:'+style.color+'40;' : ''}">
+          <div class="cta-dot" style="background:${style.color};${isSelected?'box-shadow:0 0 8px '+style.color:''}"></div>
+          <span class="cta-text" style="color:${isSelected ? style.color : '#475569'}">${isSelected ? 'Prompt Ready →' : 'View Prompt'}</span>
+        </div>
+      </div>`;
 
-          return (
-            <div
-              onClick={onClick}
-              onMouseEnter={() => setHovered(true)}
-              onMouseLeave={() => setHovered(false)}
-              style={{
-                cursor: "pointer",
-                borderRadius: 20,
-                overflow: "hidden",
-                border: `1px solid ${isSelected ? style.color : hovered ? "rgba(255,255,255,0.12)" : "rgba(255,255,255,0.06)"}`,
-                background: "#0a0a14",
-                boxShadow: isSelected
-                  ? `0 0 0 1px ${style.color}, 0 20px 60px -10px ${style.glow}, inset 0 1px 0 rgba(255,255,255,0.05)`
-                  : hovered
-                  ? `0 20px 40px -15px ${style.glow}, inset 0 1px 0 rgba(255,255,255,0.04)`
-                  : "inset 0 1px 0 rgba(255,255,255,0.03)",
-                transform: isSelected ? "translateY(-4px) scale(1.01)" : hovered ? "translateY(-2px)" : "none",
-                transition: "all 0.3s cubic-bezier(0.34,1.56,0.64,1)",
-                position: "relative",
-              }}
-            >
-              <div style={{ position: "relative", aspectRatio: "3/4", overflow: "hidden" }}>
-                <img
-                  src={style.image}
-                  alt={style.title}
-                  style={{
-                    width: "100%", height: "100%", objectFit: "cover",
-                    transform: hovered ? "scale(1.06)" : "scale(1)",
-                    transition: "transform 0.5s ease",
-                    display: "block",
-                  }}
-                />
-                <div style={{
-                  position: "absolute", inset: 0,
-                  background: "linear-gradient(to top, #0a0a14 0%, rgba(10,10,20,0.4) 50%, transparent 100%)"
-                }} />
+    card.addEventListener('click', () => {
+      selectedId = (selectedId === style.id) ? null : style.id;
+      renderCards();
+      updatePanel();
+    });
 
-                <div style={{
-                  position: "absolute", top: 12, left: 12,
-                  background: "rgba(0,0,0,0.6)",
-                  backdropFilter: "blur(12px)",
-                  border: `1px solid ${style.color}50`,
-                  borderRadius: 100,
-                  padding: "4px 10px",
-                  display: "flex", alignItems: "center", gap: 5,
-                }}>
-                  <span style={{ fontSize: 9, letterSpacing: "0.15em", fontFamily: "monospace", color: style.color, fontWeight: 700, textTransform: "uppercase" }}>
-                    {style.category}
-                  </span>
-                </div>
-              </div>
+    // Hover effects
+    card.addEventListener('mouseenter', () => {
+      if (!card.classList.contains('selected')) {
+        card.style.boxShadow = `0 20px 40px -15px ${style.glow}, inset 0 1px 0 rgba(255,255,255,0.04)`;
+        card.style.borderColor = 'rgba(255,255,255,0.12)';
+      }
+    });
+    card.addEventListener('mouseleave', () => {
+      if (!card.classList.contains('selected')) {
+        card.style.boxShadow = 'inset 0 1px 0 rgba(255,255,255,0.03)';
+        card.style.borderColor = '';
+      }
+    });
 
-              <div style={{ padding: "16px 18px 18px" }}>
-                <div style={{ fontSize: 15, fontWeight: 700, color: "#f1f5f9", marginBottom: 4 }}>
-                  {style.title}
-                </div>
-                <div style={{ fontSize: 11, color: "#64748b", fontStyle: "italic", marginBottom: 14 }}>
-                  {style.tagline}
-                </div>
-              </div>
-            </div>
-          );
-        }
+    grid.appendChild(card);
+  });
+}
 
-        // ─── PROMPT PANEL ──────────────────────────────────────────────────────────────
-        function PromptPanel({ style, onClose }) {
-          const [copied, setCopied] = useState(false);
-          const [activeTab, setActiveTab] = useState("prompt");
+// ── Update panel ───────────────────────────────────────────────────────────
+function updatePanel() {
+  const panel = document.getElementById('prompt-panel');
+  if (!selectedId) { panel.classList.remove('visible'); return; }
 
-          const handleCopy = useCallback(async () => {
-            try {
-              await navigator.clipboard.writeText(style.prompt);
-            } catch {
-              const ta = document.createElement("textarea");
-              ta.value = style.prompt;
-              document.body.appendChild(ta);
-              ta.select();
-              document.execCommand("copy");
-              document.body.removeChi
+  const style = STYLES.find(s => s.id === selectedId);
+  if (!style) { panel.classList.remove('visible'); return; }
+
+  // Reset animation
+  panel.classList.remove('visible');
+  void panel.offsetWidth; // reflow
+  panel.classList.add('visible');
+
+  // Apply accent color as CSS vars for tabs
+  panel.style.borderColor = style.color + '40';
+  panel.style.boxShadow = `0 40px 80px -20px ${style.glow}, 0 0 0 1px ${style.color}20, inset 0 1px 0 rgba(255,255,255,0.05)`;
+
+  document.getElementById('panel-dot').style.cssText = `background:${style.color};box-shadow:0 0 16px ${style.glow}`;
+  document.getElementById('panel-title').textContent = style.title;
+  document.getElementById('panel-img').src = style.image;
+  document.getElementById('panel-img').alt = style.title;
+  document.getElementById('panel-aura').style.background = style.color;
+
+  // Steps color
+  document.getElementById('panel-steps-label').style.color = style.color;
+  ['pn1','pn2','pn3','pn4'].forEach(id => {
+    const el = document.getElementById(id);
+    el.style.background = style.color + '25';
+    el.style.borderColor = style.color + '60';
+    el.style.color = style.color;
+  });
+
+  // Copy button
+  const copyBtn = document.getElementById('copy-btn');
+  copyBtn.style.cssText = `border:1px solid ${style.color};background:linear-gradient(135deg,${style.color}25,${style.color}10);color:${style.color};box-shadow:0 0 20px ${style.glow}`;
+  copyBtn.onclick = () => copyPrompt(style);
+
+  // Active tab styling
+  const tabs = document.querySelectorAll('.tab-btn');
+  tabs.forEach(t => {
+    const isActive = t.dataset.tab === activeTab;
+    t.style.color = isActive ? style.color : '#475569';
+    t.style.borderColor = isActive ? style.color + '50' : 'transparent';
+    t.style.background = isActive ? style.color + '15' : 'transparent';
+  });
+
+  // Prompt text
+  const lines = style.prompt.split('\n');
+  const pre = document.getElementById('prompt-text');
+  pre.innerHTML = `<span class="prompt-title" style="color:${style.color}">${lines[0]}</span>\n` + lines.slice(1).join('\n');
+
+  showTab(activeTab);
+  panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+// ── Copy ───────────────────────────────────────────────────────────────────
+function copyPrompt(style) {
+  const btn = document.getElementById('copy-btn');
+  const text = style.prompt;
+
+  const doFeedback = () => {
+    btn.style.cssText = `border:1px solid #22c55e80;background:linear-gradient(135deg,#14532d20,#16a34a20);color:#22c55e;box-shadow:0 0 20px rgba(34,197,94,0.3);transform:scale(0.97)`;
+    btn.querySelector('.copy-icon').textContent = '✓';
+    btn.querySelector('.copy-label').textContent = 'Copied!';
+    setTimeout(() => {
+      btn.style.cssText = `border:1px solid ${style.color};background:linear-gradient(135deg,${style.color}25,${style.color}10);color:${style.color};box-shadow:0 0 20px ${style.glow};transform:scale(1)`;
+      btn.querySelector('.copy-icon').textContent = '⎘';
+      btn.querySelector('.copy-label').textContent = 'Copy Prompt';
+    }, 2500);
+  };
+
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(doFeedback).catch(() => fallbackCopy(text, doFeedback));
+  } else {
+    fallbackCopy(text, doFeedback);
+  }
+}
+
+function fallbackCopy(text, cb) {
+  const ta = document.createElement('textarea');
+  ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+  document.body.appendChild(ta); ta.select();
+  try { document.execCommand('copy'); } catch(e) {}
+  document.body.removeChild(ta);
+  if (cb) cb();
+}
+
+// ── Tabs ───────────────────────────────────────────────────────────────────
+function showTab(tab) {
+  activeTab = tab;
+  const promptEl = document.getElementById('prompt-text');
+  const tipsEl = document.getElementById('tips-content');
+  if (tab === 'prompt') {
+    promptEl.style.display = 'block';
+    tipsEl.style.display = 'none';
+  } else {
+    promptEl.style.display = 'none';
+    tipsEl.style.display = 'flex';
+  }
+  if (selectedId) {
+    const style = STYLES.find(s => s.id === selectedId);
+    document.querySelectorAll('.tab-btn').forEach(t => {
+      const isActive = t.dataset.tab === activeTab;
+      t.style.color = isActive ? style.color : '#475569';
+      t.style.borderColor = isActive ? style.color + '50' : 'transparent';
+      t.style.background = isActive ? style.color + '15' : 'transparent';
+    });
+  }
+}
+
+// ── Filter pills ────────────────────────────────────────────────────────────
+document.querySelectorAll('.pill-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.pill-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    activeCategory = btn.dataset.cat;
+    selectedId = null;
+    document.getElementById('prompt-panel').classList.remove('visible');
+    renderCards();
+  });
+});
+
+// ── Panel tabs ──────────────────────────────────────────────────────────────
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => showTab(btn.dataset.tab));
+});
+
+// ── Close panel ─────────────────────────────────────────────────────────────
+document.getElementById('panel-close').addEventListener('click', () => {
+  selectedId = null;
+  document.getElementById('prompt-panel').classList.remove('visible');
+  renderCards();
+});
+
+// ── Init ────────────────────────────────────────────────────────────────────
+renderCards();
+</script>
+</body>
+</html>
