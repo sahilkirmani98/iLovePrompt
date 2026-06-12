@@ -1,0 +1,2643 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PromptOS — AI Prompt Generator & Library | Best AI Prompts for Midjourney, ChatGPT, Flux</title>
+  <meta name="description" content="The world's most advanced AI prompt platform. Generate, improve, and discover expert prompts for Midjourney, ChatGPT, Flux, Leonardo, and more. Free AI headshot prompts, portrait prompts, LinkedIn photo prompts." />
+  <meta name="keywords" content="AI prompts, Midjourney prompts, ChatGPT prompts, AI headshot prompts, LinkedIn headshot prompts, professional photo prompts, Flux prompts, Leonardo AI prompts, anime prompts, portrait prompts" />
+  <meta property="og:title" content="PromptOS — AI Prompt Generator & Library" />
+  <meta property="og:description" content="Generate expert AI prompts for any model. 500+ categories. Free." />
+  <meta property="og:type" content="website" />
+  <link rel="canonical" href="https://promptos.ai/" />
+
+  <!-- JSON-LD Schema -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "PromptOS",
+    "description": "AI Prompt Generator and Library for Midjourney, ChatGPT, Flux, Leonardo and more",
+    "applicationCategory": "UtilityApplication",
+    "operatingSystem": "Web",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+    "featureList": [
+      "AI Prompt Generator",
+      "Prompt Improver",
+      "500+ Prompt Categories",
+      "Midjourney Prompts",
+      "ChatGPT Prompts",
+      "LinkedIn Headshot Prompts",
+      "Professional Photo Prompts"
+    ]
+  }
+  </script>
+
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap');
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #04040d;
+      --surface: #080812;
+      --surface2: #0d0d1f;
+      --border: rgba(255,255,255,0.07);
+      --border2: rgba(255,255,255,0.04);
+      --text: #e8eaf0;
+      --muted: #556070;
+      --muted2: #3a4050;
+      --accent: #6366f1;
+      --accent2: #818cf8;
+      --purple: #a855f7;
+      --pink: #ec4899;
+      --cyan: #06b6d4;
+      --green: #22c55e;
+      --amber: #f59e0b;
+      --font: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      --mono: 'JetBrains Mono', monospace;
+    }
+
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font);
+      min-height: 100vh;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── AMBIENT ── */
+    #ambient {
+      position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden;
+    }
+    .orb { position: absolute; border-radius: 50%; }
+    .orb-a {
+      width: 900px; height: 900px;
+      background: radial-gradient(circle, rgba(99,102,241,0.10) 0%, transparent 65%);
+      top: -400px; left: 50%; transform: translateX(-50%);
+      animation: driftA 14s ease-in-out infinite alternate;
+    }
+    .orb-b {
+      width: 600px; height: 600px;
+      background: radial-gradient(circle, rgba(168,85,247,0.07) 0%, transparent 65%);
+      bottom: 0; right: -200px;
+      animation: driftB 18s ease-in-out infinite alternate;
+    }
+    .orb-c {
+      width: 400px; height: 400px;
+      background: radial-gradient(circle, rgba(6,182,212,0.05) 0%, transparent 65%);
+      top: 60%; left: -100px;
+      animation: driftC 22s ease-in-out infinite alternate;
+    }
+    @keyframes driftA { to { transform: translateX(-50%) translateY(40px); } }
+    @keyframes driftB { to { transform: translate(-30px, -30px); } }
+    @keyframes driftC { to { transform: translate(20px, -20px); } }
+
+    /* ── GRID BG ── */
+    .grid-bg {
+      position: fixed; inset: 0; pointer-events: none; z-index: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.018) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.018) 1px, transparent 1px);
+      background-size: 60px 60px;
+    }
+
+    /* ── HEADER ── */
+    header {
+      position: sticky; top: 0; z-index: 200;
+      border-bottom: 1px solid var(--border2);
+      background: rgba(4,4,13,0.9);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+    }
+    .header-inner {
+      max-width: 1400px; margin: 0 auto; padding: 0 24px;
+      height: 60px; display: flex; align-items: center; justify-content: space-between; gap: 16px;
+    }
+    .logo { display: flex; align-items: center; gap: 10px; text-decoration: none; flex-shrink: 0; }
+    .logo-mark {
+      width: 32px; height: 32px; border-radius: 9px;
+      background: linear-gradient(135deg, var(--accent), var(--purple));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 15px; font-weight: 900; color: #fff;
+      box-shadow: 0 0 20px rgba(99,102,241,0.45);
+    }
+    .logo-text { font-size: 15px; font-weight: 800; letter-spacing: -0.04em; color: #fff; }
+    .logo-text span { color: var(--accent2); }
+    .header-nav { display: flex; align-items: center; gap: 4px; }
+    .nav-btn {
+      padding: 6px 14px; border-radius: 8px; cursor: pointer;
+      font-size: 12px; font-weight: 500; color: var(--muted);
+      background: transparent; border: none; outline: none;
+      transition: color 0.2s, background 0.2s;
+      text-decoration: none; display: inline-flex;
+    }
+    .nav-btn:hover { color: var(--text); background: rgba(255,255,255,0.04); }
+    .nav-btn.active { color: var(--text); }
+    .header-right { display: flex; align-items: center; gap: 8px; }
+    .live-badge {
+      display: flex; align-items: center; gap: 6px;
+      padding: 4px 12px; border-radius: 100px;
+      border: 1px solid rgba(34,197,94,0.25);
+      background: rgba(34,197,94,0.05);
+    }
+    .live-dot {
+      width: 5px; height: 5px; border-radius: 50%;
+      background: var(--green); animation: pulse 2s ease infinite;
+    }
+    .live-badge span { font-size: 10px; font-family: var(--mono); color: #4ade80; letter-spacing: 0.1em; }
+    @keyframes pulse { 0%,100% { opacity:1; box-shadow:0 0 0 0 rgba(34,197,94,0.4); } 50% { opacity:0.8; box-shadow:0 0 0 4px rgba(34,197,94,0); } }
+
+    /* ── MAIN LAYOUT ── */
+    main { max-width: 1400px; margin: 0 auto; padding: 0 24px 100px; position: relative; z-index: 1; }
+
+    /* ── SECTION TABS ── */
+    .section-tabs {
+      display: flex; align-items: center; gap: 4px;
+      border-bottom: 1px solid var(--border2);
+      padding: 0;
+      margin-bottom: 0;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .section-tabs::-webkit-scrollbar { display: none; }
+    .section-tab {
+      padding: 14px 20px; cursor: pointer; white-space: nowrap;
+      font-size: 12px; font-weight: 600; color: var(--muted);
+      border: none; background: transparent; outline: none;
+      border-bottom: 2px solid transparent; margin-bottom: -1px;
+      transition: color 0.2s, border-color 0.2s;
+      display: flex; align-items: center; gap: 7px;
+    }
+    .section-tab:hover { color: #94a3b8; }
+    .section-tab.active { color: var(--text); border-bottom-color: var(--accent); }
+    .section-tab .tab-icon { font-size: 14px; }
+    .section-tab .tab-count {
+      font-size: 9px; font-family: var(--mono);
+      background: rgba(99,102,241,0.15); color: var(--accent2);
+      padding: 2px 6px; border-radius: 4px;
+    }
+
+    /* ── SECTION PANELS ── */
+    .section-panel { display: none; }
+    .section-panel.active { display: block; }
+
+    /* ══════════════════════════════════════════════
+       SECTION: LIBRARY
+    ══════════════════════════════════════════════ */
+
+    /* HERO */
+    .hero {
+      padding: 56px 0 48px; text-align: center;
+      animation: fadeUp 0.5s ease both;
+    }
+    @keyframes fadeUp { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }
+
+    .hero-eyebrow {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 5px 16px; border-radius: 100px;
+      border: 1px solid rgba(99,102,241,0.25);
+      background: rgba(99,102,241,0.05);
+      margin-bottom: 24px;
+    }
+    .hero-eyebrow span { font-size: 10px; font-family: var(--mono); color: var(--accent2); letter-spacing: 0.15em; text-transform: uppercase; }
+    .hero-eyebrow-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--accent2); animation: pulse 2s ease infinite; }
+
+    h1 {
+      font-size: clamp(36px, 5.5vw, 64px);
+      font-weight: 900; letter-spacing: -0.04em; line-height: 1.08;
+      color: #fff; margin-bottom: 18px;
+    }
+    .grad { background: linear-gradient(135deg, var(--accent) 0%, var(--purple) 50%, var(--pink) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .hero-sub {
+      font-size: clamp(14px, 1.8vw, 16px); color: var(--muted);
+      max-width: 520px; margin: 0 auto 36px; line-height: 1.75;
+    }
+
+    .hero-stats { display: flex; justify-content: center; gap: 32px; flex-wrap: wrap; margin-bottom: 40px; }
+    .stat-item { text-align: center; }
+    .stat-val { font-size: 22px; font-weight: 800; color: #fff; letter-spacing: -0.03em; }
+    .stat-label { font-size: 10px; font-family: var(--mono); color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase; margin-top: 2px; }
+
+    /* ── SEARCH ── */
+    .search-wrap {
+      max-width: 640px; margin: 0 auto 36px; position: relative;
+    }
+    .search-input {
+      width: 100%; padding: 14px 56px 14px 48px;
+      border-radius: 14px; border: 1px solid var(--border);
+      background: rgba(255,255,255,0.03);
+      color: var(--text); font-family: var(--font); font-size: 14px;
+      outline: none; transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .search-input:focus { border-color: rgba(99,102,241,0.5); box-shadow: 0 0 0 3px rgba(99,102,241,0.1); }
+    .search-input::placeholder { color: var(--muted); }
+    .search-icon { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); font-size: 16px; color: var(--muted2); pointer-events: none; }
+    .search-clear {
+      position: absolute; right: 14px; top: 50%; transform: translateY(-50%);
+      background: rgba(255,255,255,0.06); border: none; border-radius: 6px;
+      color: var(--muted); cursor: pointer; font-size: 12px; padding: 3px 8px;
+      display: none;
+    }
+    .search-clear.visible { display: block; }
+
+    /* ── CATEGORY PILLS ── */
+    .cat-scroll {
+      overflow-x: auto; scrollbar-width: none;
+      margin-bottom: 28px;
+    }
+    .cat-scroll::-webkit-scrollbar { display: none; }
+    .cat-row { display: flex; gap: 6px; padding-bottom: 4px; min-width: max-content; }
+    .cat-pill {
+      padding: 7px 16px; border-radius: 100px; cursor: pointer; white-space: nowrap;
+      font-size: 11px; font-weight: 600; letter-spacing: 0.04em;
+      border: 1px solid var(--border2); background: rgba(255,255,255,0.02);
+      color: var(--muted); transition: all 0.2s; outline: none;
+    }
+    .cat-pill:hover { border-color: rgba(255,255,255,0.12); color: #94a3b8; }
+    .cat-pill.active {
+      background: linear-gradient(135deg, var(--accent), #7c3aed);
+      border-color: var(--accent); color: #fff;
+      box-shadow: 0 0 16px rgba(99,102,241,0.35);
+    }
+    .result-meta {
+      font-size: 11px; font-family: var(--mono); color: var(--muted2);
+      margin-bottom: 20px;
+    }
+    .result-meta strong { color: var(--muted); }
+
+    /* ── PROMPT GRID ── */
+    #prompt-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 18px;
+    }
+
+    /* ── PROMPT CARD ── */
+    .p-card {
+      border-radius: 18px; overflow: hidden; cursor: pointer;
+      border: 1px solid rgba(255,255,255,0.055);
+      background: var(--surface);
+      transition: transform 0.28s cubic-bezier(0.34,1.4,0.64,1), border-color 0.25s, box-shadow 0.25s;
+      position: relative;
+    }
+    .p-card:hover { transform: translateY(-3px); border-color: rgba(255,255,255,0.11); }
+    .p-card.selected { transform: translateY(-4px) scale(1.01); }
+    .card-img { position: relative; aspect-ratio: 3/4; overflow: hidden; }
+    .card-img img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.5s ease; }
+    .p-card:hover .card-img img, .p-card.selected .card-img img { transform: scale(1.06); }
+    .card-overlay { position: absolute; inset: 0; background: linear-gradient(to top, #080812 0%, rgba(8,8,18,0.25) 50%, transparent 100%); pointer-events: none; }
+    .card-badges { position: absolute; top: 10px; left: 10px; display: flex; gap: 5px; }
+    .c-badge {
+      background: rgba(0,0,0,0.55); backdrop-filter: blur(10px);
+      border-radius: 100px; padding: 3px 9px;
+      display: flex; align-items: center; gap: 4px;
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+    .c-badge-dot { width: 4px; height: 4px; border-radius: 50%; }
+    .c-badge span { font-size: 8px; font-family: var(--mono); letter-spacing: 0.1em; text-transform: uppercase; font-weight: 700; }
+    .card-trending {
+      position: absolute; top: 10px; right: 10px;
+      background: rgba(245,158,11,0.15); backdrop-filter: blur(10px);
+      border: 1px solid rgba(245,158,11,0.3); border-radius: 100px;
+      padding: 3px 8px; font-size: 8px; font-family: var(--mono);
+      color: var(--amber); letter-spacing: 0.1em; text-transform: uppercase;
+    }
+    .card-check {
+      position: absolute; bottom: 10px; right: 10px;
+      width: 26px; height: 26px; border-radius: 50%;
+      display: none; align-items: center; justify-content: center;
+      font-size: 12px; color: #000; font-weight: 900;
+    }
+    .p-card.selected .card-check { display: flex; }
+
+    .card-body { padding: 14px 16px 16px; }
+    .card-title { font-size: 14px; font-weight: 700; color: #e8eaf0; margin-bottom: 3px; letter-spacing: -0.02em; }
+    .card-desc { font-size: 11px; color: var(--muted); margin-bottom: 12px; line-height: 1.5; }
+    .card-meta { display: flex; align-items: center; justify-content: space-between; }
+    .card-models { display: flex; gap: 4px; flex-wrap: wrap; }
+    .model-chip {
+      font-size: 8px; font-family: var(--mono); letter-spacing: 0.08em;
+      padding: 2px 7px; border-radius: 4px;
+      background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.07);
+      color: var(--muted);
+    }
+    .card-fav {
+      background: transparent; border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 7px; color: var(--muted2); cursor: pointer;
+      font-size: 13px; padding: 4px 7px; transition: all 0.2s;
+    }
+    .card-fav:hover, .card-fav.faved { color: var(--pink); border-color: rgba(236,72,153,0.3); background: rgba(236,72,153,0.07); }
+    .card-cta {
+      display: flex; align-items: center; gap: 7px;
+      padding: 7px 11px; border-radius: 8px; margin-top: 10px;
+      background: rgba(255,255,255,0.025); border: 1px solid rgba(255,255,255,0.055);
+      transition: all 0.2s;
+    }
+    .cta-dot { width: 5px; height: 5px; border-radius: 50%; }
+    .p-card.selected .cta-dot { animation: pulse 1.5s ease infinite; }
+    .cta-label { font-size: 9px; font-family: var(--mono); letter-spacing: 0.15em; text-transform: uppercase; font-weight: 700; color: var(--muted); transition: color 0.2s; }
+
+    /* ── PROMPT PANEL ── */
+    #prompt-panel {
+      margin-top: 24px; border-radius: 22px;
+      border: 1px solid rgba(255,255,255,0.07);
+      background: linear-gradient(145deg, var(--surface2) 0%, var(--surface) 100%);
+      display: none; overflow: hidden;
+      animation: slideIn 0.3s cubic-bezier(0.34,1.2,0.64,1) both;
+    }
+    @keyframes slideIn { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
+    #prompt-panel.open { display: block; }
+
+    .panel-head {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 16px 22px; border-bottom: 1px solid var(--border2);
+      background: rgba(255,255,255,0.015);
+    }
+    .panel-head-l { display: flex; align-items: center; gap: 10px; }
+    .panel-dot { width: 9px; height: 9px; border-radius: 50%; }
+    .panel-name { font-size: 14px; font-weight: 700; color: #fff; }
+    .panel-cat-tag {
+      font-size: 9px; font-family: var(--mono); letter-spacing: 0.12em;
+      padding: 3px 9px; border-radius: 5px; background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08); color: var(--muted);
+    }
+    .panel-actions { display: flex; gap: 6px; align-items: center; }
+    .panel-action-btn {
+      padding: 6px 14px; border-radius: 9px; cursor: pointer;
+      font-size: 10px; font-family: var(--mono); font-weight: 700; letter-spacing: 0.1em;
+      text-transform: uppercase; border: 1px solid var(--border);
+      background: rgba(255,255,255,0.03); color: var(--muted);
+      transition: all 0.2s; white-space: nowrap;
+    }
+    .panel-action-btn:hover { background: rgba(255,255,255,0.06); color: var(--text); }
+    .panel-close-btn {
+      width: 30px; height: 30px; border-radius: 50%;
+      border: 1px solid var(--border2); background: rgba(255,255,255,0.03);
+      color: var(--muted); font-size: 13px; cursor: pointer;
+      display: flex; align-items: center; justify-content: center; transition: all 0.2s;
+    }
+    .panel-close-btn:hover { background: rgba(255,255,255,0.07); color: var(--text); }
+
+    .panel-body { display: flex; min-height: 400px; }
+    .panel-img-col { width: 35%; min-width: 180px; flex-shrink: 0; position: relative; }
+    .panel-img-col img { width: 100%; height: 100%; min-height: 400px; object-fit: cover; display: block; }
+    .panel-img-overlay { position: absolute; inset: 0; background: linear-gradient(to right, transparent 50%, var(--surface2) 100%), linear-gradient(to top, var(--surface2) 0%, transparent 40%); pointer-events: none; }
+    .panel-content-col { flex: 1; display: flex; flex-direction: column; border-left: 1px solid var(--border2); }
+
+    .panel-tabs { display: flex; gap: 4px; padding: 12px 18px; border-bottom: 1px solid var(--border2); flex-wrap: wrap; justify-content: space-between; }
+    .tab-group { display: flex; gap: 3px; }
+    .p-tab {
+      padding: 5px 14px; border-radius: 7px; cursor: pointer;
+      font-size: 9px; font-family: var(--mono); letter-spacing: 0.1em;
+      text-transform: uppercase; font-weight: 700;
+      border: 1px solid transparent; background: transparent; color: var(--muted);
+      transition: all 0.2s;
+    }
+    .p-tab:hover { color: var(--text); }
+    .p-tab.active { color: #fff; }
+    .copy-main-btn {
+      display: flex; align-items: center; gap: 7px;
+      padding: 7px 18px; border-radius: 9px; cursor: pointer;
+      font-size: 10px; font-family: var(--mono); font-weight: 700; letter-spacing: 0.1em;
+      text-transform: uppercase; border: 1px solid; white-space: nowrap;
+      transition: all 0.25s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    .copy-icon-sp { font-size: 13px; }
+
+    .panel-scroll { flex: 1; overflow-y: auto; padding: 18px 20px; max-height: 350px; scrollbar-width: thin; scrollbar-color: rgba(255,255,255,0.08) transparent; }
+    .panel-scroll::-webkit-scrollbar { width: 4px; }
+    .panel-scroll::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.08); border-radius: 2px; }
+
+    /* PROMPT LEVELS */
+    .prompt-levels { display: flex; flex-direction: column; gap: 12px; }
+    .prompt-level {
+      border-radius: 12px; border: 1px solid rgba(255,255,255,0.06);
+      background: rgba(255,255,255,0.02); overflow: hidden;
+    }
+    .level-head {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 10px 14px; cursor: pointer; user-select: none;
+    }
+    .level-head-l { display: flex; align-items: center; gap: 9px; }
+    .level-badge {
+      font-size: 8px; font-family: var(--mono); letter-spacing: 0.1em;
+      padding: 2px 8px; border-radius: 4px; text-transform: uppercase; font-weight: 700;
+    }
+    .level-badge.basic { background: rgba(34,197,94,0.12); color: #4ade80; border: 1px solid rgba(34,197,94,0.2); }
+    .level-badge.pro { background: rgba(99,102,241,0.12); color: var(--accent2); border: 1px solid rgba(99,102,241,0.2); }
+    .level-badge.expert { background: rgba(168,85,247,0.12); color: #c084fc; border: 1px solid rgba(168,85,247,0.2); }
+    .level-badge.ultra { background: rgba(236,72,153,0.12); color: #f472b6; border: 1px solid rgba(236,72,153,0.2); }
+    .level-title { font-size: 11px; font-weight: 600; color: #94a3b8; }
+    .level-copy-btn {
+      font-size: 9px; font-family: var(--mono); letter-spacing: 0.08em;
+      padding: 3px 10px; border-radius: 6px;
+      border: 1px solid rgba(255,255,255,0.08); background: rgba(255,255,255,0.03);
+      color: var(--muted); cursor: pointer; transition: all 0.2s;
+    }
+    .level-copy-btn:hover { color: var(--text); background: rgba(255,255,255,0.06); }
+    .level-body { padding: 0 14px 14px; display: none; }
+    .level-body.open { display: block; }
+    .level-text {
+      font-family: var(--mono); font-size: 10px; line-height: 1.85;
+      color: #64748b; white-space: pre-wrap; word-break: break-word;
+    }
+    .level-models { display: flex; gap: 5px; flex-wrap: wrap; margin-top: 10px; }
+    .lm-tag {
+      font-size: 8px; font-family: var(--mono); letter-spacing: 0.08em;
+      padding: 3px 9px; border-radius: 5px;
+      border: 1px solid rgba(255,255,255,0.07); color: var(--muted2);
+      background: rgba(255,255,255,0.02);
+    }
+
+    /* TIPS panel */
+    .tips-list { display: flex; flex-direction: column; gap: 10px; }
+    .tip-item {
+      padding: 12px 14px; border-radius: 10px;
+      background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05);
+    }
+    .tip-title { font-size: 11px; font-weight: 700; color: #cbd5e1; margin-bottom: 5px; display: flex; align-items: center; gap: 7px; }
+    .tip-body { font-size: 11px; color: var(--muted); line-height: 1.6; }
+
+    /* ══════════════════════════════════════════════
+       SECTION: GENERATOR
+    ══════════════════════════════════════════════ */
+    .gen-hero { padding: 48px 0 36px; text-align: center; }
+    .gen-hero h2 { font-size: clamp(28px,4vw,46px); font-weight: 900; letter-spacing: -0.04em; color: #fff; margin-bottom: 12px; }
+    .gen-hero p { font-size: 15px; color: var(--muted); max-width: 480px; margin: 0 auto; line-height: 1.7; }
+
+    .gen-form {
+      max-width: 860px; margin: 0 auto;
+      background: var(--surface2); border-radius: 20px;
+      border: 1px solid var(--border); padding: 28px;
+    }
+    .form-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 18px; margin-bottom: 22px; }
+    .form-field { display: flex; flex-direction: column; gap: 7px; }
+    .form-label { font-size: 10px; font-family: var(--mono); color: var(--muted); letter-spacing: 0.12em; text-transform: uppercase; font-weight: 700; }
+    .form-select, .form-input {
+      padding: 10px 14px; border-radius: 10px;
+      border: 1px solid var(--border); background: rgba(255,255,255,0.025);
+      color: var(--text); font-family: var(--font); font-size: 13px;
+      outline: none; transition: border-color 0.2s, box-shadow 0.2s;
+      appearance: none; -webkit-appearance: none;
+    }
+    .form-select:focus, .form-input:focus {
+      border-color: rgba(99,102,241,0.4); box-shadow: 0 0 0 3px rgba(99,102,241,0.08);
+    }
+    .form-select option { background: #0d0d1f; }
+    .form-input::placeholder { color: var(--muted2); }
+    .subject-row { margin-bottom: 18px; }
+    .subject-input {
+      width: 100%; padding: 12px 16px; border-radius: 12px;
+      border: 1px solid var(--border); background: rgba(255,255,255,0.025);
+      color: var(--text); font-family: var(--font); font-size: 14px;
+      outline: none; transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .subject-input:focus { border-color: rgba(99,102,241,0.4); box-shadow: 0 0 0 3px rgba(99,102,241,0.08); }
+    .subject-input::placeholder { color: var(--muted2); }
+    .gen-btn {
+      width: 100%; padding: 14px; border-radius: 12px; cursor: pointer;
+      font-size: 13px; font-weight: 700; letter-spacing: -0.01em;
+      background: linear-gradient(135deg, var(--accent), var(--purple));
+      border: none; color: #fff;
+      box-shadow: 0 0 24px rgba(99,102,241,0.4);
+      transition: all 0.25s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    .gen-btn:hover { transform: translateY(-1px); box-shadow: 0 0 32px rgba(99,102,241,0.55); }
+    .gen-btn:active { transform: translateY(0px); }
+    .gen-btn:disabled { opacity: 0.55; cursor: not-allowed; transform: none; }
+
+    .gen-results { max-width: 860px; margin: 24px auto 0; display: none; }
+    .gen-results.show { display: block; }
+    .results-header { margin-bottom: 16px; display: flex; align-items: center; justify-content: space-between; }
+    .results-title { font-size: 13px; font-weight: 700; color: #e2e8f0; }
+    .results-sub { font-size: 11px; color: var(--muted); margin-top: 2px; }
+    .result-cards { display: flex; flex-direction: column; gap: 12px; }
+    .result-card {
+      border-radius: 14px; border: 1px solid rgba(255,255,255,0.06);
+      background: var(--surface2); overflow: hidden;
+    }
+    .rc-head {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 12px 16px; border-bottom: 1px solid var(--border2);
+      background: rgba(255,255,255,0.015);
+    }
+    .rc-head-l { display: flex; align-items: center; gap: 8px; }
+    .rc-level-tag {
+      font-size: 8px; font-family: var(--mono); letter-spacing: 0.1em;
+      padding: 2px 8px; border-radius: 4px; text-transform: uppercase; font-weight: 700;
+    }
+    .rc-title { font-size: 12px; font-weight: 600; color: #94a3b8; }
+    .rc-copy {
+      font-size: 9px; font-family: var(--mono); letter-spacing: 0.08em;
+      padding: 4px 12px; border-radius: 7px;
+      border: 1px solid rgba(255,255,255,0.08); background: rgba(255,255,255,0.03);
+      color: var(--muted); cursor: pointer; transition: all 0.2s;
+    }
+    .rc-copy:hover { color: var(--text); background: rgba(255,255,255,0.06); }
+    .rc-body { padding: 14px 16px; }
+    .rc-text {
+      font-family: var(--mono); font-size: 11px; line-height: 1.8;
+      color: #64748b; white-space: pre-wrap; word-break: break-word;
+    }
+    .rc-models { display: flex; gap: 5px; flex-wrap: wrap; margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border2); }
+
+    /* ══════════════════════════════════════════════
+       SECTION: IMPROVER
+    ══════════════════════════════════════════════ */
+    .improver-wrap { max-width: 860px; margin: 0 auto; padding: 48px 0; }
+    .improver-wrap h2 { font-size: clamp(26px,3.5vw,40px); font-weight: 900; letter-spacing: -0.04em; color: #fff; margin-bottom: 10px; }
+    .improver-wrap > p { font-size: 14px; color: var(--muted); margin-bottom: 32px; line-height: 1.7; }
+    .improver-input-wrap {
+      background: var(--surface2); border-radius: 18px; border: 1px solid var(--border);
+      overflow: hidden; margin-bottom: 16px;
+    }
+    .improver-textarea {
+      width: 100%; min-height: 140px; padding: 18px 20px;
+      background: transparent; border: none; color: var(--text);
+      font-family: var(--mono); font-size: 13px; line-height: 1.7;
+      outline: none; resize: vertical;
+    }
+    .improver-textarea::placeholder { color: var(--muted2); }
+    .improver-footer { padding: 12px 16px; border-top: 1px solid var(--border2); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; }
+    .char-count { font-size: 10px; font-family: var(--mono); color: var(--muted2); }
+    .improve-btn {
+      padding: 10px 24px; border-radius: 10px; cursor: pointer;
+      font-size: 11px; font-weight: 700; letter-spacing: 0.04em;
+      background: linear-gradient(135deg, var(--accent), var(--purple));
+      border: none; color: #fff; transition: all 0.2s;
+      box-shadow: 0 0 16px rgba(99,102,241,0.3);
+    }
+    .improve-btn:hover { transform: translateY(-1px); box-shadow: 0 0 24px rgba(99,102,241,0.45); }
+    .improve-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+    .improver-results { display: none; }
+    .improver-results.show { display: block; }
+
+    /* ══════════════════════════════════════════════
+       SECTION: TRENDING / VIRAL
+    ══════════════════════════════════════════════ */
+    .trending-section { padding: 40px 0; }
+    .section-h { font-size: 22px; font-weight: 800; letter-spacing: -0.03em; color: #fff; margin-bottom: 6px; }
+    .section-sh { font-size: 13px; color: var(--muted); margin-bottom: 24px; }
+
+    .trend-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 14px; margin-bottom: 40px; }
+    .trend-card {
+      border-radius: 14px; border: 1px solid var(--border2);
+      background: var(--surface2); padding: 16px;
+      cursor: pointer; transition: all 0.2s;
+      position: relative; overflow: hidden;
+    }
+    .trend-card:hover { border-color: rgba(255,255,255,0.1); transform: translateY(-2px); }
+    .trend-rank { font-size: 32px; font-weight: 900; letter-spacing: -0.05em; color: rgba(255,255,255,0.04); position: absolute; top: 8px; right: 14px; font-family: var(--mono); }
+    .trend-icon { font-size: 22px; margin-bottom: 10px; }
+    .trend-name { font-size: 13px; font-weight: 700; color: #e2e8f0; margin-bottom: 4px; }
+    .trend-meta { font-size: 10px; color: var(--muted); font-family: var(--mono); }
+    .trend-bar { margin-top: 10px; height: 2px; background: rgba(255,255,255,0.05); border-radius: 2px; overflow: hidden; }
+    .trend-bar-fill { height: 100%; border-radius: 2px; transition: width 0.8s ease; }
+
+    .potd-banner {
+      border-radius: 18px; border: 1px solid rgba(245,158,11,0.2);
+      background: linear-gradient(135deg, rgba(245,158,11,0.05) 0%, rgba(236,72,153,0.05) 100%);
+      padding: 28px 32px; display: flex; align-items: center; gap: 32px;
+      flex-wrap: wrap; margin-bottom: 40px;
+      position: relative; overflow: hidden;
+    }
+    .potd-banner::before {
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(135deg, rgba(245,158,11,0.04), transparent);
+      pointer-events: none;
+    }
+    .potd-badge {
+      font-size: 9px; font-family: var(--mono); letter-spacing: 0.15em;
+      padding: 4px 12px; border-radius: 100px; text-transform: uppercase; font-weight: 700;
+      background: rgba(245,158,11,0.1); border: 1px solid rgba(245,158,11,0.25); color: var(--amber);
+      margin-bottom: 10px; display: inline-block;
+    }
+    .potd-title { font-size: 20px; font-weight: 800; letter-spacing: -0.03em; color: #fff; margin-bottom: 6px; }
+    .potd-desc { font-size: 13px; color: var(--muted); line-height: 1.6; max-width: 440px; }
+    .potd-copy-btn {
+      padding: 12px 24px; border-radius: 11px; cursor: pointer;
+      font-size: 12px; font-weight: 700; letter-spacing: 0.04em;
+      background: linear-gradient(135deg, var(--amber), #f97316);
+      border: none; color: #000; flex-shrink: 0;
+      transition: all 0.2s;
+    }
+    .potd-copy-btn:hover { transform: translateY(-1px); box-shadow: 0 0 20px rgba(245,158,11,0.4); }
+
+    /* ══════════════════════════════════════════════
+       SEO PAGES SECTION
+    ══════════════════════════════════════════════ */
+    .seo-pages { padding: 40px 0; }
+    .seo-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px; }
+    .seo-card {
+      border-radius: 14px; border: 1px solid var(--border2);
+      background: var(--surface2); padding: 18px 20px;
+      text-decoration: none; display: block;
+      transition: all 0.2s;
+    }
+    .seo-card:hover { border-color: rgba(255,255,255,0.1); transform: translateY(-2px); background: rgba(255,255,255,0.03); }
+    .seo-cat { font-size: 9px; font-family: var(--mono); letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent2); margin-bottom: 8px; }
+    .seo-title { font-size: 14px; font-weight: 700; color: #e2e8f0; margin-bottom: 4px; }
+    .seo-desc { font-size: 11px; color: var(--muted); line-height: 1.5; margin-bottom: 10px; }
+    .seo-meta { display: flex; align-items: center; justify-content: space-between; }
+    .seo-count { font-size: 10px; font-family: var(--mono); color: var(--muted2); }
+    .seo-arrow { font-size: 12px; color: var(--muted2); }
+
+    /* ══════════════════════════════════════════════
+       FOOTER
+    ══════════════════════════════════════════════ */
+    footer {
+      max-width: 1400px; margin: 60px auto 0; padding: 32px 24px 40px;
+      border-top: 1px solid var(--border2); position: relative; z-index: 1;
+    }
+    .footer-top { display: flex; justify-content: space-between; gap: 40px; flex-wrap: wrap; margin-bottom: 32px; }
+    .footer-brand .logo-text { font-size: 16px; }
+    .footer-brand p { font-size: 12px; color: var(--muted); margin-top: 8px; max-width: 260px; line-height: 1.6; }
+    .footer-col h4 { font-size: 10px; font-family: var(--mono); letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted2); margin-bottom: 12px; font-weight: 700; }
+    .footer-col a { display: block; font-size: 12px; color: var(--muted); text-decoration: none; margin-bottom: 7px; transition: color 0.2s; }
+    .footer-col a:hover { color: var(--text); }
+    .footer-bottom { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; border-top: 1px solid var(--border2); padding-top: 20px; }
+    .footer-copy { font-size: 11px; color: var(--muted2); }
+    .footer-legal { display: flex; gap: 16px; }
+    .footer-legal a { font-size: 11px; color: var(--muted2); text-decoration: none; }
+    .footer-legal a:hover { color: var(--muted); }
+
+    /* ══════════════════════════════════════════════
+       LOADER / SPINNER
+    ══════════════════════════════════════════════ */
+    .spinner {
+      width: 18px; height: 18px; border: 2px solid rgba(255,255,255,0.15);
+      border-top-color: #fff; border-radius: 50%;
+      animation: spin 0.7s linear infinite; display: inline-block;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .loading-state { display: flex; align-items: center; justify-content: center; gap: 12px; padding: 40px; color: var(--muted); font-size: 13px; }
+
+    /* ══════════════════════════════════════════════
+       RESPONSIVE
+    ══════════════════════════════════════════════ */
+    @media (max-width: 768px) {
+      .header-nav { display: none; }
+      .panel-img-col { display: none; }
+      .panel-body { flex-direction: column; }
+      .form-grid { grid-template-columns: 1fr; }
+      .hero { padding: 36px 0 28px; }
+      .potd-banner { padding: 20px; }
+      .footer-top { flex-direction: column; gap: 24px; }
+    }
+    @media (max-width: 480px) {
+      main { padding: 0 16px 80px; }
+      header .header-inner { padding: 0 16px; }
+      .gen-form { padding: 18px; }
+    }
+
+    /* ══════════════════════════════════════════════
+       MISC UTILITIES
+    ══════════════════════════════════════════════ */
+    .hidden { display: none !important; }
+    .empty-state { text-align: center; padding: 60px 20px; }
+    .empty-state p { color: var(--muted); font-size: 14px; margin-top: 12px; }
+    .share-toast {
+      position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(10px);
+      background: var(--surface2); border: 1px solid rgba(34,197,94,0.3);
+      border-radius: 12px; padding: 12px 20px;
+      font-size: 12px; color: #4ade80; font-family: var(--mono);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+      opacity: 0; transition: all 0.3s; pointer-events: none; z-index: 999;
+      white-space: nowrap;
+    }
+    .share-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  </style>
+</head>
+<body>
+<div id="ambient">
+  <div class="orb orb-a"></div>
+  <div class="orb orb-b"></div>
+  <div class="orb orb-c"></div>
+</div>
+<div class="grid-bg"></div>
+
+<!-- ── HEADER ── -->
+<header>
+  <div class="header-inner">
+    <a href="/" class="logo">
+      <div class="logo-mark">⚡</div>
+      <div>
+        <div class="logo-text">Prompt<span>OS</span></div>
+      </div>
+    </a>
+    <nav class="header-nav">
+      <button class="nav-btn active" onclick="switchSection('library')">Library</button>
+      <button class="nav-btn" onclick="switchSection('generator')">Generator</button>
+      <button class="nav-btn" onclick="switchSection('improver')">Improver</button>
+      <button class="nav-btn" onclick="switchSection('trending')">Trending</button>
+    </nav>
+    <div class="header-right">
+      <div class="live-badge">
+        <div class="live-dot"></div>
+        <span>500+ Prompts</span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ── MAIN ── -->
+<main>
+
+  <!-- SECTION TABS (mobile) -->
+  <div class="section-tabs" id="section-tabs">
+    <button class="section-tab active" onclick="switchSection('library')" data-section="library">
+      <span class="tab-icon">📚</span> Library <span class="tab-count">400+</span>
+    </button>
+    <button class="section-tab" onclick="switchSection('generator')" data-section="generator">
+      <span class="tab-icon">⚡</span> Generator
+    </button>
+    <button class="section-tab" onclick="switchSection('improver')" data-section="improver">
+      <span class="tab-icon">✨</span> Improver
+    </button>
+    <button class="section-tab" onclick="switchSection('trending')" data-section="trending">
+      <span class="tab-icon">🔥</span> Trending
+    </button>
+    <button class="section-tab" onclick="switchSection('pages')" data-section="pages">
+      <span class="tab-icon">🗂</span> Explore
+    </button>
+  </div>
+
+  <!-- ══════════════════════════════════════════════
+       LIBRARY SECTION
+  ══════════════════════════════════════════════ -->
+  <div class="section-panel active" id="panel-library">
+
+    <div class="hero">
+      <div class="hero-eyebrow">
+        <div class="hero-eyebrow-dot"></div>
+        <span>AI Prompt Operating System</span>
+      </div>
+      <h1>The World's Most<br><span class="grad">Powerful Prompt Library</span></h1>
+      <p class="hero-sub">Expert-engineered prompts for Midjourney, ChatGPT, Flux, Leonardo, Claude, Gemini & more. Copy. Create. Go viral.</p>
+      <div class="hero-stats">
+        <div class="stat-item"><div class="stat-val">400+</div><div class="stat-label">Prompts</div></div>
+        <div class="stat-item"><div class="stat-val">40+</div><div class="stat-label">Categories</div></div>
+        <div class="stat-item"><div class="stat-val">8</div><div class="stat-label">AI Models</div></div>
+        <div class="stat-item"><div class="stat-val">4</div><div class="stat-label">Prompt Tiers</div></div>
+      </div>
+    </div>
+
+    <div class="search-wrap">
+      <span class="search-icon">🔍</span>
+      <input type="text" class="search-input" id="search-input" placeholder="Search prompts — headshot, anime, CEO, wedding…" autocomplete="off" />
+      <button class="search-clear" id="search-clear">✕</button>
+    </div>
+
+    <div class="cat-scroll">
+      <div class="cat-row" id="cat-row"></div>
+    </div>
+    <p class="result-meta" id="result-meta"></p>
+
+    <div id="prompt-grid"></div>
+
+    <!-- PROMPT PANEL -->
+    <div id="prompt-panel">
+      <div class="panel-head">
+        <div class="panel-head-l">
+          <div class="panel-dot" id="panel-dot"></div>
+          <div class="panel-name" id="panel-name"></div>
+          <div class="panel-cat-tag" id="panel-cat-tag"></div>
+        </div>
+        <div class="panel-actions">
+          <button class="panel-action-btn" id="panel-share-btn">⬆ Share</button>
+          <button class="panel-action-btn" id="panel-fav-btn">♡ Save</button>
+          <button class="panel-close-btn" id="panel-close">✕</button>
+        </div>
+      </div>
+      <div class="panel-body">
+        <div class="panel-img-col">
+          <img id="panel-img" src="" alt="" />
+          <div class="panel-img-overlay"></div>
+        </div>
+        <div class="panel-content-col">
+          <div class="panel-tabs">
+            <div class="tab-group">
+              <button class="p-tab active" data-tab="prompts" id="tab-prompts">Prompts</button>
+              <button class="p-tab" data-tab="tips" id="tab-tips">Tips</button>
+              <button class="p-tab" data-tab="negative" id="tab-negative">Negative</button>
+            </div>
+            <button class="copy-main-btn" id="copy-main-btn">
+              <span class="copy-icon-sp" id="copy-icon-sp">⎘</span>
+              <span id="copy-main-label">Copy Best</span>
+            </button>
+          </div>
+          <div class="panel-scroll" id="panel-scroll">
+            <div id="tab-content-prompts" class="prompt-levels"></div>
+            <div id="tab-content-tips" class="tips-list hidden"></div>
+            <div id="tab-content-negative" class="hidden"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ══════════════════════════════════════════════
+       GENERATOR SECTION
+  ══════════════════════════════════════════════ -->
+  <div class="section-panel" id="panel-generator">
+    <div class="gen-hero">
+      <h2>AI Prompt <span class="grad">Generator</span></h2>
+      <p>Describe what you want. Get four expert-tier prompts optimised for every major AI model.</p>
+    </div>
+
+    <div class="gen-form">
+      <div class="subject-row">
+        <div class="form-label" style="margin-bottom:7px;">Describe your subject</div>
+        <input type="text" class="subject-input" id="gen-subject" placeholder="e.g. A 35-year-old female surgeon in a hospital setting…" />
+      </div>
+      <div class="form-grid">
+        <div class="form-field">
+          <label class="form-label">Gender</label>
+          <select class="form-select" id="gen-gender">
+            <option value="">Any</option>
+            <option>Male</option>
+            <option>Female</option>
+            <option>Non-binary</option>
+          </select>
+        </div>
+        <div class="form-field">
+          <label class="form-label">Age range</label>
+          <select class="form-select" id="gen-age">
+            <option value="">Not specified</option>
+            <option>18–25</option>
+            <option>26–35</option>
+            <option>36–45</option>
+            <option>46–60</option>
+            <option>60+</option>
+          </select>
+        </div>
+        <div class="form-field">
+          <label class="form-label">Style</label>
+          <select class="form-select" id="gen-style">
+            <option>Photorealistic</option>
+            <option>Cinematic</option>
+            <option>Editorial</option>
+            <option>Artistic / Painterly</option>
+            <option>Anime / Illustration</option>
+            <option>Fantasy</option>
+            <option>Luxury / High-fashion</option>
+            <option>Minimalist</option>
+          </select>
+        </div>
+        <div class="form-field">
+          <label class="form-label">Camera</label>
+          <select class="form-select" id="gen-camera">
+            <option value="">Not specified</option>
+            <option>Sony A7R V 85mm f/1.4</option>
+            <option>Hasselblad H6D 80mm</option>
+            <option>Leica M11 50mm f/2</option>
+            <option>Canon EOS R5 50mm f/1.2</option>
+            <option>Nikon Z9 85mm f/1.8</option>
+            <option>Medium Format Film</option>
+          </select>
+        </div>
+        <div class="form-field">
+          <label class="form-label">Lighting</label>
+          <select class="form-select" id="gen-lighting">
+            <option>Natural window light</option>
+            <option>Golden hour sunlight</option>
+            <option>Studio softbox</option>
+            <option>Rembrandt lighting</option>
+            <option>Cinematic rim light</option>
+            <option>Neon/ambient night</option>
+            <option>Chiaroscuro</option>
+            <option>High-key clean white</option>
+          </select>
+        </div>
+        <div class="form-field">
+          <label class="form-label">Environment</label>
+          <select class="form-select" id="gen-env">
+            <option>Urban cityscape</option>
+            <option>Luxury interior</option>
+            <option>Natural outdoor</option>
+            <option>Studio backdrop</option>
+            <option>Office / Corporate</option>
+            <option>Rooftop / High-rise</option>
+            <option>Minimalist white studio</option>
+            <option>Forest / Nature</option>
+          </select>
+        </div>
+        <div class="form-field">
+          <label class="form-label">Mood</label>
+          <select class="form-select" id="gen-mood">
+            <option>Confident &amp; powerful</option>
+            <option>Calm &amp; composed</option>
+            <option>Warm &amp; approachable</option>
+            <option>Mysterious &amp; edgy</option>
+            <option>Joyful &amp; energetic</option>
+            <option>Serious &amp; authoritative</option>
+            <option>Romantic &amp; soft</option>
+          </select>
+        </div>
+        <div class="form-field">
+          <label class="form-label">Platform target</label>
+          <select class="form-select" id="gen-platform">
+            <option>LinkedIn</option>
+            <option>Instagram</option>
+            <option>YouTube</option>
+            <option>Twitter / X</option>
+            <option>Portfolio website</option>
+            <option>Dating app</option>
+            <option>Corporate website</option>
+            <option>Magazine</option>
+          </select>
+        </div>
+        <div class="form-field">
+          <label class="form-label">Color grading</label>
+          <select class="form-select" id="gen-grade">
+            <option>Natural / True-to-life</option>
+            <option>Moody desaturated</option>
+            <option>Warm golden</option>
+            <option>Cool blue-teal</option>
+            <option>High contrast B&amp;W</option>
+            <option>Vintage film</option>
+            <option>Pastel soft</option>
+          </select>
+        </div>
+        <div class="form-field">
+          <label class="form-label">Aspect ratio</label>
+          <select class="form-select" id="gen-ratio">
+            <option>1:1 (Square)</option>
+            <option>4:5 (Portrait)</option>
+            <option>9:16 (Vertical)</option>
+            <option>16:9 (Landscape)</option>
+            <option>3:4</option>
+            <option>2:3</option>
+          </select>
+        </div>
+        <div class="form-field">
+          <label class="form-label">Profession / Role</label>
+          <input type="text" class="form-input" id="gen-profession" placeholder="Doctor, CEO, Model, Student…" />
+        </div>
+        <div class="form-field">
+          <label class="form-label">Clothing / Style</label>
+          <input type="text" class="form-input" id="gen-clothing" placeholder="Business suit, casual denim, lab coat…" />
+        </div>
+      </div>
+      <button class="gen-btn" id="gen-btn" onclick="generatePrompts()">
+        ⚡ Generate Expert Prompts
+      </button>
+    </div>
+
+    <div class="gen-results" id="gen-results">
+      <div class="results-header">
+        <div>
+          <div class="results-title">Generated Prompts</div>
+          <div class="results-sub">4 tier levels · Optimised for 8 AI models</div>
+        </div>
+      </div>
+      <div class="result-cards" id="result-cards"></div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════
+       IMPROVER SECTION
+  ══════════════════════════════════════════════ -->
+  <div class="section-panel" id="panel-improver">
+    <div class="improver-wrap">
+      <h2>Prompt <span class="grad">Improver</span></h2>
+      <p>Paste any AI prompt — even a rough one. Get it back as four progressively more powerful versions, optimised for the best AI image and text models.</p>
+
+      <div class="improver-input-wrap">
+        <textarea class="improver-textarea" id="improver-input" placeholder="Paste your existing prompt here…&#10;&#10;Example: a woman in a park, smiling, afternoon"></textarea>
+        <div class="improver-footer">
+          <span class="char-count" id="char-count">0 characters</span>
+          <button class="improve-btn" id="improve-btn" onclick="improvePrompt()">✨ Improve Prompt</button>
+        </div>
+      </div>
+
+      <div class="improver-results" id="improver-results">
+        <div class="result-cards" id="improver-cards"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════
+       TRENDING SECTION
+  ══════════════════════════════════════════════ -->
+  <div class="section-panel" id="panel-trending">
+    <div class="trending-section">
+
+      <!-- Prompt of the Day -->
+      <div class="potd-banner" id="potd-banner">
+        <div style="flex:1;min-width:240px;">
+          <div class="potd-badge">🌟 Prompt of the Day</div>
+          <div class="potd-title" id="potd-title">Loading…</div>
+          <div class="potd-desc" id="potd-desc"></div>
+        </div>
+        <button class="potd-copy-btn" id="potd-copy">Copy Prompt</button>
+      </div>
+
+      <div class="section-h">🔥 Trending This Week</div>
+      <div class="section-sh">Most copied, shared and favourited prompts right now</div>
+      <div class="trend-grid" id="trend-grid"></div>
+
+      <div class="section-h">📈 Top Categories</div>
+      <div class="section-sh">Browse by what creators are using most</div>
+      <div class="trend-grid" id="cat-grid"></div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════
+       SEO PAGES SECTION
+  ══════════════════════════════════════════════ -->
+  <div class="section-panel" id="panel-pages">
+    <div class="seo-pages">
+      <div style="padding:48px 0 32px;">
+        <h2 style="font-size:clamp(24px,3.5vw,38px);font-weight:900;letter-spacing:-0.04em;color:#fff;margin-bottom:10px;">Explore by <span class="grad">Topic</span></h2>
+        <p style="font-size:14px;color:var(--muted);max-width:480px;line-height:1.7;">Each page contains 10–50 expert prompts, FAQ, recommended models, and negative prompt guidance.</p>
+      </div>
+      <div class="seo-grid" id="seo-grid"></div>
+    </div>
+  </div>
+
+</main>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-top">
+    <div class="footer-brand">
+      <a href="/" class="logo" style="margin-bottom:10px;display:inline-flex;">
+        <div class="logo-mark" style="width:28px;height:28px;font-size:13px;">⚡</div>
+        <div class="logo-text" style="font-size:14px;margin-left:8px;">Prompt<span>OS</span></div>
+      </a>
+      <p>The world's most advanced AI prompt platform. Free. No signup. Open to everyone.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Library</h4>
+      <a href="#" onclick="switchSection('library');switchCategory('Headshots')">AI Headshots</a>
+      <a href="#" onclick="switchSection('library');switchCategory('LinkedIn')">LinkedIn Photos</a>
+      <a href="#" onclick="switchSection('library');switchCategory('Cinematic')">Cinematic Portraits</a>
+      <a href="#" onclick="switchSection('library');switchCategory('Fantasy')">Fantasy & Anime</a>
+      <a href="#" onclick="switchSection('library');switchCategory('Editorial')">Fashion Editorial</a>
+    </div>
+    <div class="footer-col">
+      <h4>Tools</h4>
+      <a href="#" onclick="switchSection('generator')">Prompt Generator</a>
+      <a href="#" onclick="switchSection('improver')">Prompt Improver</a>
+      <a href="#" onclick="switchSection('trending')">Trending Now</a>
+      <a href="#" onclick="switchSection('pages')">Explore Topics</a>
+    </div>
+    <div class="footer-col">
+      <h4>Models</h4>
+      <a href="#">Midjourney Prompts</a>
+      <a href="#">ChatGPT Prompts</a>
+      <a href="#">Flux Prompts</a>
+      <a href="#">Leonardo AI Prompts</a>
+      <a href="#">Ideogram Prompts</a>
+      <a href="#">Claude Prompts</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span class="footer-copy">© 2025 PromptOS. All rights reserved.</span>
+    <div class="footer-legal">
+      <a href="#">Privacy</a>
+      <a href="#">Terms</a>
+      <a href="#">Sitemap</a>
+    </div>
+  </div>
+</footer>
+
+<div class="share-toast" id="share-toast">✓ Copied to clipboard</div>
+
+<script>
+// ════════════════════════════════════════════════════════════════════════
+// DATA
+// ════════════════════════════════════════════════════════════════════════
+
+const PROMPTS = [
+  // ── HEADSHOTS ──────────────────────────────────────────────────────────
+  {
+    id:"hs-linkedin", title:"LinkedIn Executive Headshot", category:"Headshots",
+    desc:"Premium corporate headshot for professional profiles",
+    color:"#6366f1", trending:true,
+    image:"https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&q=80",
+    models:["Midjourney","Flux","ChatGPT","Leonardo"],
+    prompts:{
+      basic:`Professional headshot, business attire, clean background, confident smile, good lighting.`,
+      pro:`Corporate executive headshot photograph. Subject wearing tailored business suit, direct confident gaze. Clean gradient grey backdrop, softbox studio lighting. Shot on Sony A7R V 85mm f/1.4, shallow depth of field. LinkedIn-optimized 1:1 crop.`,
+      expert:`[EXECUTIVE LINKEDIN HEADSHOT — PROFESSIONAL PHOTOGRAPHY]
+Subject: Business professional, corporate attire — navy or charcoal suit, white shirt, subtle tie or scarf.
+CAMERA: Sony A7R V with 85mm f/1.4 G Master. Aperture f/1.8. ISO 200. 1/200s.
+LIGHTING: Three-point studio setup: 120cm octabox key left at 45°, large silver reflector fill right, hair light LED panel above-rear.
+BACKDROP: Seamless mid-grey or gradient charcoal — no texture, no pattern.
+POSE: Head-and-shoulders. Direct gaze, relaxed jaw, natural confident expression. Slight body turn 15° from camera.
+POST: Light frequency separation retouching. Subtle skin tone correction. No heavy smoothing. Natural pore texture retained.
+MOOD: Approachable authority. McKinsey partner. Fortune 500 board member.`,
+      ultra:`[ULTRA-TIER LINKEDIN EXECUTIVE PORTRAIT — COMMERCIAL PHOTOGRAPHY SPECIFICATION]
+
+IDENTITY DIRECTIVE: Preserve all unique facial identifiers with maximum fidelity. This is a commercial identity photograph.
+
+TECHNICAL SPECIFICATION:
+Camera: Phase One IQ4 150MP with Schneider Kreuznach 110mm f/2.8. Capture resolution: 14204 × 10652px.
+Lighting setup:
+  • Key: 180cm Elinchrom Rotalux Deep Octa, camera-left 35°, power 400Ws
+  • Fill: 100cm silver beauty dish, camera-right, 1.5 stop underexposed
+  • Hair/separation: gridded strip box, camera-rear-right, warm 5600K
+  • Kicker: small grid spot, lower camera-left, subtle jaw definition
+  • Background: 2× diffused 600Ws heads on seamless — even illumination, no hot spots
+
+SUBJECT STYLING:
+Wardrobe: Bespoke navy chalk-stripe suit, white poplin shirt, no pattern tie in burgundy or steel blue. No visible brand logos. Pocket square optional.
+Grooming: Natural — no heavy foundation visible. Light matte powder only.
+Expression: Direct gaze, genuine micro-smile (Duchenne marker — crows feet engaged), jaw slightly forward for definition.
+
+COMPOSITION: Head-and-shoulders. Eyes at upper-third intersection. Nose parallel to sensor plane. 15° body rotation. 5° head tilt toward key light.
+
+POST-PROCESSING:
+  • Frequency separation skin retouching — preserve pores, remove blemishes only
+  • Selective dodging: forehead, nose bridge, upper cheekbone
+  • Color grade: neutral, skin tones accurate, whites clean, blacks slightly lifted
+  • Output: 2400px square at 300dpi
+
+OUTPUT STANDARD: Headshot as seen in McKinsey Partner directory, Harvard Business School faculty page, Goldman Sachs senior leadership.`
+    },
+    tips:[
+      {icon:"📷", title:"Best models for this", body:"Midjourney v6.1 and Flux Pro give the most realistic skin textures. For maximum control, use Stable Diffusion XL with a trained headshot LoRA."},
+      {icon:"🎯", title:"Key to realism", body:"Include the exact camera model and lens in your prompt. Models trained on photography metadata respond dramatically better to specific gear references."},
+      {icon:"💡", title:"LinkedIn optimization", body:"Request 1:1 aspect ratio and specify 'upper third eye placement' — LinkedIn crops profile photos to a circle, so head position matters."}
+    ],
+    negative:"blurry, low resolution, cartoon, illustration, oversaturated, heavy filter, deep shadows, harsh shadows, double face, extra limbs, distorted features, watermark, text overlay, dark background, extreme bokeh, fish-eye lens"
+  },
+  {
+    id:"hs-medical", title:"Doctor / Medical Professional", category:"Headshots",
+    desc:"Authoritative healthcare professional portraits",
+    color:"#06b6d4", trending:false,
+    image:"https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=600&q=80",
+    models:["Midjourney","ChatGPT","Flux"],
+    prompts:{
+      basic:`Doctor portrait, white coat, stethoscope, hospital setting, professional lighting, confident expression.`,
+      pro:`Medical professional headshot. Physician wearing clean white lab coat with stethoscope. Hospital corridor or clinical background. Studio-quality lighting. Warm approachable expression, direct eye contact. Shot on Canon R5 50mm f/1.2.`,
+      expert:`[MEDICAL PROFESSIONAL PORTRAIT — HEALTHCARE HEADSHOT]
+Subject: Physician or healthcare professional, white coat, stethoscope draped naturally.
+ENVIRONMENT: Clinical — blurred hospital corridor, modern clinic background, or clean white studio.
+CAMERA: Canon EOS R5, 50mm f/1.2L. Aperture f/2 for controlled background separation.
+LIGHTING: Large window-light simulation: 150cm softbox from camera-left creating soft, even, flattering illumination. Warm reflector fill right.
+EXPRESSION: Calm competence. Approachable authority. Genuine warm smile — the expression that reassures patients.
+POST: Accurate skin rendering. Clean whites on coat. Crisp, professional — no heavy filters.
+MOOD: NHS consultant meets TED speaker. Expertise and warmth in equal measure.`,
+      ultra:`[ULTRA MEDICAL PORTRAIT SPECIFICATION]
+
+IDENTITY PRESERVATION: Maximum fidelity to subject's unique facial anatomy.
+
+WARDROBE:
+  • Pristine white medical coat, freshly pressed
+  • Stethoscope: 3M Littmann Cardiology IV in dark navy or black
+  • ID badge visible but not readable
+  • Business casual underneath: plain shirt, no patterns
+
+TECHNICAL:
+Camera: Sony A7R V + 85mm GM. f/1.8, 1/200s, ISO 100
+Key light: Profoto B10X through 130cm RFi Octa, camera-left 40°
+Fill: White V-flat reflector, camera-right
+Background light: Elinchrom ELB 500 on seamless white, feathered
+
+COMPOSITION: Mid-chest to top of head. Arms relaxed — one hand possibly touching stethoscope. Eyes sharp-focused. Slight body angle, face toward camera.
+
+POST: Natural retouching. White coat rendered absolutely clean and bright. Skin: natural, healthy. Background: clean white or soft blue-grey.
+
+MOOD: Trust, expertise, compassion. Patient-facing profile image.`
+    },
+    tips:[
+      {icon:"⚕️", title:"Stethoscope placement", body:"Specify 'stethoscope draped naturally around neck' rather than 'holding stethoscope' for the most authentic look."},
+      {icon:"🎨", title:"Background choice", body:"White or light blue-grey backgrounds signal cleanliness and clinical environment. Avoid dark backgrounds for medical portraits — they read as mysterious rather than trustworthy."}
+    ],
+    negative:"scrubs only, bloody, surgical mask, horror, dark moody, tattoos visible, casual clothing, distorted face, blurry, low resolution, cartoon"
+  },
+  {
+    id:"hs-ceo", title:"CEO / Founder Portrait", category:"Headshots",
+    desc:"Power portraiture for startup founders and executives",
+    color:"#f59e0b", trending:true,
+    image:"https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=600&q=80",
+    models:["Midjourney","Flux","ChatGPT"],
+    prompts:{
+      basic:`CEO portrait, professional attire, confident expression, office background, sharp focus.`,
+      pro:`Startup founder executive portrait. Dark blazer, minimal jewelry, direct powerful gaze. Modern glass office background, blurred. Rembrandt-style side lighting, dramatic shadows. Shot on Leica M11, 50mm.`,
+      expert:`[CEO / FOUNDER POWER PORTRAIT]
+CONCEPT: The portrait that communicates leadership, vision, and controlled authority.
+WARDROBE: Tailored dark blazer — black, charcoal, or navy. No tie. Smart casual — the Zuckerberg grey-T is too casual; the Wall Street suit is too formal. Find the Steve Jobs middle ground.
+ENVIRONMENT: Blurred modern glass office, city skyline at night, or pure black/dark gradient studio.
+LIGHTING: Rembrandt or split-lighting — dramatic, structured, one dominant source. Shows bone structure. Communicates seriousness and depth.
+CAMERA: Leica M11 with Summilux 50mm f/1.4. The Leica signature look — slightly warm, extraordinary micro-contrast.
+EXPRESSION: Calm certainty. This person has solved harder problems than this photo. No forced smile.
+POST: Slightly cool-to-neutral grade. Elevated blacks. No heavy skin retouching — character is part of authority.`,
+      ultra:`[ULTRA CEO PORTRAIT — MAGAZINE COVER GRADE]
+
+DIRECTORIAL VISION: YC Demo Day featured founder. Wired Magazine cover subject. The portrait that will appear next to a Forbes profile.
+
+CAMERA SYSTEM: Hasselblad H6D-100C + HC 100mm f/2.2. Medium format rendering — unmatched tonal depth, microcontrast that catches character lines without harsh harshness.
+
+LIGHTING ARCHITECTURE:
+  • Main: 200cm Elinchrom Deep Octa, placed high camera-left, angled down 30° — creates executive Rembrandt triangle
+  • Rim: Gridded Broncolor Siros, camera-rear-right — separates subject from background dramatically
+  • Fill: Minimal — white V-flat at 2 stops under key. Shadows should exist.
+  • Background: Optional: very subtle gradient light on dark seamless
+
+WARDROBE DIRECTIVE:
+No brand logos. Considered, intentional minimalism. Wardrobe should feel earned, not expensive.
+Options: Black Saint Laurent blazer, raw-edge details; grey Loro Piana roll-neck; deconstructed Japanese workwear.
+
+EXPRESSION DIRECTION:
+The subject is mid-thought. Not looking at camera — looking through it. At a problem they're about to solve.
+Eyes: alert, sharp, slightly narrowed. Not aggressive. Thinking.
+
+CROP: Magazine portrait — waist up, space above head for title/headline.
+POST-GRADE: Desaturated, lifted midtones, crushed blacks, slight teal shadows. Frame Magazine aesthetic.`
+    },
+    tips:[
+      {icon:"💼", title:"The authority signal", body:"Dark, plain clothing photographs as more authoritative than patterns. Navy and charcoal read 'executive'. Black reads 'visionary'. Patterns read 'creative director'."},
+      {icon:"🔦", title:"Lighting for power", body:"Rembrandt and split lighting create shadows that define bone structure and add gravitas. Flat frontal lighting looks like a passport photo regardless of quality."}
+    ],
+    negative:"casual t-shirt, background clutter, bad lighting, flat even lighting, cartoon, illustration, blurry, extra people, bright colors, busy background"
+  },
+
+  // ── CINEMATIC ─────────────────────────────────────────────────────────
+  {
+    id:"cin-noir", title:"Film Noir Detective", category:"Cinematic",
+    desc:"1940s Hollywood noir — cigarette smoke and shadow",
+    color:"#94a3b8", trending:false,
+    image:"https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=600&q=80",
+    models:["Midjourney","Stable Diffusion","Leonardo"],
+    prompts:{
+      basic:`Film noir portrait, black and white, dramatic shadows, detective aesthetic, cigarette smoke, moody.`,
+      pro:`1940s Hollywood film noir portrait. Black and white photograph. Subject in fedora hat and trench coat. Hard side lighting creating deep dramatic shadows. Venetian blind shadow pattern across face. Cigarette smoke. Street lamp light source.`,
+      expert:`[FILM NOIR PORTRAIT — CLASSIC HOLLYWOOD]
+ERA: 1940s Hollywood. The visual grammar of Citizen Kane (Welles/Toland), Double Indemnity (Wilder/Seitz), The Big Sleep.
+LIGHTING: Single hard source — a practical street lamp or Venetian blind grid creating razor-sharp diagonal shadow strips across the face. 70–80% of the face in deep shadow. Eyes catching a single highlight.
+WARDROBE: Fedora, trench coat, white shirt. Cigarette optional. Rain-damp fabric texture.
+PHOTOGRAPHY STYLE: Ultra high contrast black and white. Crushed blacks — detail disappears into darkness. Pure white highlights. Film grain visible at 100%.
+ENVIRONMENT: Rain-slicked cobblestone street at 2am. A single pool of yellow light. Steam rising from a grate.
+MOOD: Raymond Chandler. The moment before the case breaks open.`,
+      ultra:`[ULTRA NOIR SPECIFICATION — CINEMATIC PHOTOGRAPHY]
+
+DIRECTORIAL REFERENCE: Gordon Willis cinematography on The Godfather. John Alton's lighting on T-Men. Gregg Toland's deep focus on Citizen Kane.
+
+TECHNICAL SETUP:
+Film: Kodak Super-XX Pan (simulated) — tight grain structure, extended tonal range
+Lens: 50mm f/2 — classic portrait rendering, slight vintage barrel distortion
+Contrast: Pre-flash technique simulation — slightly lifted blacks in background, crushing in shadows
+
+LIGHTING PLAN:
+  • Zero fill light. Shadows are absolute.
+  • Single 500W Fresnel through wet window = venetian strips + water-run caustics across face
+  • Optional: amber practical bulb in background, wildly defocused
+
+ENVIRONMENT:
+Rain. Always rain. Cobblestones catching streetlight reflections. The city as accomplice.
+Include: fire escape shadow, yellow cab in distance, steam, brick wall, rain droplets.
+
+GRADE: Orthochromatic simulation — skin slightly lighter, lips darker, sky tones exaggerated. Pure grain overlay.
+
+SOUND: The image should feel like it has a sound — a lonely trumpet, a distant foghorn.`
+    },
+    tips:[
+      {icon:"🎬", title:"The Venetian blind trick", body:"Specify 'Venetian blind shadow pattern cast across face' — this single detail instantly signals noir to image models and creates the most iconic look."},
+      {icon:"⬛", title:"Crush those blacks", body:"Add 'crushed blacks, zero fill light, deep shadows' — noir lighting has no fill. The darkness is structural, not accidental."}
+    ],
+    negative:"color photography, bright lighting, happy expression, modern clothing, flat lighting, clean background, colorful, smiling, daytime"
+  },
+  {
+    id:"cin-scifi", title:"Sci-Fi Character Portrait", category:"Cinematic",
+    desc:"Blade Runner meets Mass Effect visual language",
+    color:"#06b6d4", trending:true,
+    image:"https://images.unsplash.com/photo-1446776653964-20c1d3a81b06?w=600&q=80",
+    models:["Midjourney","Stable Diffusion","Leonardo","Ideogram"],
+    prompts:{
+      basic:`Sci-fi character portrait, futuristic city background, neon lights, cyberpunk aesthetic, dramatic lighting.`,
+      pro:`Cyberpunk sci-fi portrait. Subject in tactical exosuit or military-grade jacket. Blade Runner 2049 neon-soaked mega-city background. Cool cyan and deep magenta lighting. Rain. Cinematic composition. Shot for 4K film production.`,
+      expert:`[SCI-FI CHARACTER PORTRAIT — BLADE RUNNER AESTHETIC]
+DIRECTORIAL REFERENCE: Blade Runner 2049 (Deakins), Dune Part 2 (Fraser), Mass Effect concept art.
+CHARACTER: Grizzled veteran or augmented operative. Face carries history. Not the hero — the person who keeps the hero alive.
+ENVIRONMENT: Mega-city underbelly. Neon signs in six languages none of which you speak. Rain that never stops. Vendors selling mystery food. Corporate arcology towers vanishing into cloud above.
+LIGHTING: Tri-color neon — deep magenta, electric cyan, amber sodium — all simultaneously, all competing.
+COSTUME: Battered tactical jacket with manufacturer patch, hood up. Augmented eye or subtle subdermal implant lines.
+ATMOSPHERE: The city is alive and doesn't care about you.`,
+      ultra:`[ULTRA SCI-FI PORTRAIT — FEATURE FILM GRADE]
+
+CONCEPT BRIEF: This character appears in a teaser poster for a $200M streaming original. The visual development team references Dune (Villeneuve), Alita (Rodriguez), Westworld S1.
+
+ENVIRONMENTAL WORLD-BUILDING:
+Year 2157. Neo-Tokyo megastructure district. Level 4 — above the slums, below the corporate spires. Population density: 900,000/km².
+Architecture: Post-Metabolism brutalism fused with vertical neon advertising. Hundreds of layers of pipes, cables, fire escapes, satellite dishes.
+
+SUBJECT SPECIFICATION:
+Face: Real human features, heavily lit from environmental practicals. Micro-augmentation: subtle implants, one enhanced eye with HUD reflection.
+Costume dept: Layer 1 — thermal base with carbon-fiber weave. Layer 2 — weathered tactical shell jacket. Layer 3 — partially open rain cloak.
+Expression: Alert. Pre-mission focus. The calculation behind the eyes.
+
+CINEMATOGRAPHY:
+Camera: ARRI Alexa 65 with Zeiss Supreme Prime 65mm T1.5 in 6K Open Gate
+Color Science: Log C capture, custom ACES LUT with boosted neon channel separation
+VFX Environment: Photorealistic digital environment, no greenscreen tells
+
+GRADE: Teal and orange base, pushed further into cyan-magenta split in shadow. Neon channels saturated +30 beyond natural. Skin held neutral against the color war.`
+    },
+    tips:[
+      {icon:"🌆", title:"Environment as character", body:"In sci-fi portraits, the background IS part of the subject. Specify environmental details as thoroughly as character details."},
+      {icon:"🎨", title:"Neon color theory", body:"Tri-color neon (cyan, magenta, amber) creates the most cinematic sci-fi look because it mimics real-world artificial lighting complexity."}
+    ],
+    negative:"clean modern city, daylight, natural lighting, happy, medieval, fantasy magic, bright colors, simple background, natural landscape"
+  },
+
+  // ── EDITORIAL ─────────────────────────────────────────────────────────
+  {
+    id:"ed-highfash", title:"High Fashion Editorial", category:"Editorial",
+    desc:"Vogue-quality fashion photography",
+    color:"#ec4899", trending:true,
+    image:"https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=600&q=80",
+    models:["Midjourney","Flux","Leonardo"],
+    prompts:{
+      basic:`High fashion editorial photograph, elegant pose, designer clothing, magazine quality, studio lighting.`,
+      pro:`Vogue editorial fashion photograph. Subject in haute couture. Steven Meisel × Nick Knight visual language. Pure white or deep black studio. Dramatic fashion lighting. Architectural pose. Shot on Hasselblad, large format film aesthetic.`,
+      expert:`[HIGH FASHION EDITORIAL — VOGUE MAGAZINE STANDARD]
+PUBLICATION BRIEF: Cover or 8-page editorial spread for major fashion magazine. Shot in Paris or New York.
+PHOTOGRAPHER REFERENCE: Steven Meisel, Nick Knight, Solve Sundsbo, Paolo Roversi.
+SUBJECT: Female model. Couture-level clothing — architectural, sculptural garments. Balenciaga, Comme des Garçons, Iris van Herpen aesthetic.
+LIGHTING: Fashion lighting — either:
+  A) High-key white seamless, shadowless, beauty-lit with ring flash
+  B) Dramatic chiaroscuro: single source, deep shadow, operatic contrast
+POSE: Architectural. Mannequin-still but charged with tension. The body as sculpture.
+BEAUTY: Editorial makeup — graphic, precise, intentional. Not wearable. Artful.
+MOOD: The photograph as a cultural statement.`,
+      ultra:`[ULTRA EDITORIAL SPECIFICATION — COVER SHOOT GRADE]
+
+CLIENT: Major luxury fashion house. Season: F/W. Budget: $2M campaign.
+Creative Director: Nicolas Ghesquière / Rei Kawakubo aesthetic.
+
+PHOTOGRAPHER SYSTEM: 8×10 large format film. Sinar P3 with Rodenstock Apo-Symmar 240mm f/5.6.
+Film: Kodak Portra 800 pushed 1 stop. Developed cross-process for slight color shift.
+
+LIGHTING CONCEPT:
+The subject exists in an environment that appears to have no natural light source — illuminated from within, or from an impossible angle. The light is WRONG in a way that is deeply right.
+  • Primary: 500×500cm scrim + 8 heads bounced through, creating absolute white wrapping light
+  • Secondary: Gobo to kill any shadow on background — subject floats
+  • Accent: Cold blue gridded Fresnel from below (unnatural, fashion, runway)
+
+WARDROBE BRIEF:
+Architectural construction — fabric that has never been near a body before. Balenciaga couture silhouette distortion. Fabric: organza, bonded neoprene, or vacuum-formed resin panels.
+Color: Either pure white/ivory OR absolute black. No in-between.
+
+BEAUTY DIRECTION:
+Skin: Matte porcelain. Every pore powdered. Immaculate.
+Eyes: Graphic architectural liner — beyond normal proportions.
+Lips: Either nude disappearing OR extreme statement. Nothing middle.
+
+CROP: Full length OR extreme closeup face. Never 3/4.
+FINAL AESTHETIC: The model is not a person. She is a carrier for the designer's vision. Exquisite. Cold. Perfect. Alive.`
+    },
+    tips:[
+      {icon:"📸", title:"Fashion vs portrait lighting", body:"Fashion lighting is often anti-naturalistic by design. Beauty dish directly overhead, ring flash, or bounce into white walls creates the specific editorial 'glow' that makes fashion images recognizable."},
+      {icon:"🕊️", title:"Less is editorial", body:"Remove descriptors about character or emotion. Fashion editorial subjects are often enigmatic — the emotion is in the garment and light, not the face."}
+    ],
+    negative:"casual clothing, natural light, warm lighting, happy candid, street photography, documentary, real life, boring pose, mid-range lens compression"
+  },
+  {
+    id:"ed-oldmoney", title:"Old Money Aesthetic", category:"Editorial",
+    desc:"Heritage luxury — Brooks Brothers and East Coast estates",
+    color:"#d4a054", trending:true,
+    image:"https://images.unsplash.com/photo-1594938298603-c8148c4b4bc5?w=600&q=80",
+    models:["Midjourney","ChatGPT","Flux"],
+    prompts:{
+      basic:`Old money aesthetic photograph, preppy style, polo shirt, estate background, golden hour, film photography.`,
+      pro:`Old money aesthetic portrait. Subject in classic Ralph Lauren or Brooks Brothers attire. Connecticut estate or English manor garden background. Golden afternoon light. 35mm film photography aesthetic — warm, slightly faded. Yacht or tennis court in background.`,
+      expert:`[OLD MONEY AESTHETIC PORTRAIT]
+CULTURAL REFERENCE: East Coast American patrician. Old European aristocracy. Not Instagram luxury — actual inherited wealth.
+WARDROBE: Washed OCBD shirt (the collar has been through a hundred launderings). Chinos with a visible crease. Penny loafers. Nothing is new. Everything is expensive.
+ENVIRONMENT: The estate in August. A wooden sailing sloop. The tennis court between the rose garden and the pool. Things that have been in the family since 1947.
+PHOTOGRAPHY: 35mm film — Portra 400, slightly underexposed. Warm, organic. A camera that was in a drawer, not a camera bag.
+LIGHT: Long afternoon shadows. The golden hour that feels earned.
+MOOD: Restraint as status. Nothing to prove. The most powerful person in the room who doesn't look powerful.`,
+      ultra:`[ULTRA OLD MONEY PORTRAIT SPECIFICATION]
+
+SOCIOLOGICAL BRIEF: The subject is the kind of person who has never looked at a price tag. Not because they're careless — because it has never occurred to them to look.
+
+LOCATION:
+Primary option: Rose brick Georgian country house, Hampshire. Parkland with ancient oaks, ha-ha visible at field edge.
+Secondary: Shinnecock Bay, Southampton. Wooden dock. A 1964 Hinckley Pilot 35 tied up.
+Tertiary: The Long Island Sound at dusk from a blue-painted Adirondack chair.
+
+WARDROBE SPECIFICATION:
+1930s–1990s era pieces, all original. Not vintage-purchased. Family-owned.
+Possible: Barbour Beaufort waxed jacket. Tattersall shirt. Corduroy trousers (tan). Brown dealer boots.
+OR: Faded Nantucket Reds chinos. White OCBD button-down, untucked slightly. No watch visible.
+ABSOLUTELY NOT: visible luxury brand logos, statement accessories, gym-built physique showing.
+
+PHOTOGRAPHY:
+Camera: Leica M6 with Summicron 35mm f/2 ASPH
+Film: Fujifilm Pro 800Z pushed 1 stop — wide tonal latitude, smooth grain
+Developed: Classic lab cross-process — slightly lifted shadows, warmth in highlights
+
+EXPRESSION: Bored comfort. The particular ease of someone completely at home in their own life.
+MOOD: A Ralph Lauren campaign directed by Whit Stillman.`
+    },
+    tips:[
+      {icon:"🎞️", title:"Film simulation is essential", body:"Old money aesthetic depends on film — specify Portra 400 or Fuji 800Z for warm organic tones. Digital HDR will kill the aesthetic instantly."},
+      {icon:"👔", title:"Worn > new", body:"The most important detail: clothing should look worn and loved, not brand new. 'Slightly faded', 'well-worn', 'lived-in' are the keywords that make this aesthetic work."}
+    ],
+    negative:"new clothes with tags, brand logos, flashy jewelry, modern sportswear, studio lighting, clean sharp digital look, HDR, obviously wealthy display, sports car, mansion gate"
+  },
+
+  // ── FANTASY ───────────────────────────────────────────────────────────
+  {
+    id:"fan-ghibli", title:"Studio Ghibli Character", category:"Fantasy",
+    desc:"Hand-painted Ghibli-quality animation art",
+    color:"#4ade80", trending:true,
+    image:"https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=600&q=80",
+    models:["Midjourney","Stable Diffusion","ChatGPT","Ideogram"],
+    prompts:{
+      basic:`Studio Ghibli style illustration, anime character, watercolor background, Miyazaki art style, soft colors.`,
+      pro:`Studio Ghibli animation-quality character portrait. Miyazaki art direction. Soft watercolor background with rolling hills or forest. Character with expressive large eyes, natural movement. Cel animation quality. Spirited Away or Howl's Moving Castle visual language.`,
+      expert:`[STUDIO GHIBLI CHARACTER ART — MIYAZAKI AESTHETIC]
+STUDIO REFERENCE: Hayao Miyazaki's Spirited Away (2001), Howl's Moving Castle (2004), Princess Mononoke (1997). Not generic anime — specifically Ghibli.
+CHARACTER DESIGN:
+  • Slightly simplified facial proportions — rounder face, expressive large eyes with multiple highlight specks
+  • Hair: painted with individual strand details, moves as if there's always a breeze
+  • Expression: contains a specific Ghibli emotional quality — not simple happy/sad, but the mixture of wonder and wistfulness
+BACKGROUND: Luminous hand-painted environment. Saturated but not garish. Rolling green hills, wildflower meadows, ancient forest edges. Visible brushwork in the background — sky in particular.
+COLOR PALETTE: Ghibli signature — deep forest greens, warm amber, rich sky blues, soft cream highlights.
+MEDIUM SIMULATION: Gouache over watercolor. Cel-painted on animation paper texture.
+MOOD: The particular Ghibli feeling — vast world, small protagonist, infinite possibility.`,
+      ultra:`[ULTRA GHIBLI ART SPECIFICATION — PRODUCTION-QUALITY]
+
+CREATIVE DIRECTOR: Isao Takahata production standard. Joe Hisaishi score implied by the visual.
+
+ANIMATION PRODUCTION CONTEXT:
+This is a key visual or theatrical poster for a Studio Ghibli theatrical release. Production budget equivalent: $20M. Every line is intentional.
+
+CHARACTER SPECIFICATION:
+Age: 12–16. Gender: the warmth and capability that Ghibli female protagonists embody.
+Face: Precise Ghibli facial formula — 3:2 eye-to-head ratio, small defined nose, wide expressive mouth. Eyes: multi-layered iris with 3 highlight points.
+Hair: Dark with subtle warm highlights. Moving. Alive. Each strand traced.
+Costume: Ghibli world-specific — a world that is simultaneously nostalgic and completely invented. Practical clothes: apron, boots, cape. Or: school uniform adapted for adventure.
+
+ENVIRONMENTAL DESIGN:
+Scene: On the edge of something enormous — the sea, a cloud, a forest that goes on forever.
+Sky: The Ghibli sky — dramatic cumulus clouds painted with loving detail, sunset reds, deep twilight blues.
+Foreground: Wildflowers, grass bending in wind.
+Background depth: 4 distinct layers, each painted separately.
+
+TECHNICAL MEDIUM:
+Animation cel + digital composite. Cell-painted with Ghibli's specific opacity techniques.
+Background: Acrylic gouache on hotpress paper, digitally composited.
+
+EMOTIONAL DIRECTION:
+The image should make you feel: 'There is still a beautiful world.' The hope that lives in the space between what is and what could be.`
+    },
+    tips:[
+      {icon:"🌿", title:"Ghibli vs generic anime", body:"The key differentiator is the background detail — generic anime has simple backgrounds, Ghibli has hand-painted environmental masterpieces. Specify 'hand-painted watercolor environment' to pull the background quality up."},
+      {icon:"😌", title:"The Ghibli emotional quality", body:"Specify 'expression containing wonder and wistfulness' or 'Chihiro expression' — the specific Ghibli emotional register is what makes it recognizable vs just any anime character."}
+    ],
+    negative:"dark themes, violence, horror, hyper-realistic 3D rendering, sharp digital look, moe anime style, ecchi, sharp shadows, photorealism"
+  },
+  {
+    id:"fan-viking", title:"Viking Warrior Portrait", category:"Fantasy",
+    desc:"Epic Norse warrior — forge-lit and battle-scarred",
+    color:"#f97316", trending:false,
+    image:"https://images.unsplash.com/photo-1583864697784-a0efc8379f70?w=600&q=80",
+    models:["Midjourney","Stable Diffusion","Leonardo"],
+    prompts:{
+      basic:`Viking warrior portrait, Norse mythology, battle armor, dramatic lighting, epic fantasy, beard, fur cloak.`,
+      pro:`Epic Viking warrior portrait. Subject in authentic Norse battle armor — chainmail, fur cloak, rune-etched axe. Dramatic forge or firelight. Battle-scarred face. Braided beard with rune beads. Epic fantasy photorealism. Dark overcast dramatic sky.`,
+      expert:`[VIKING WARRIOR EPIC PORTRAIT]
+HISTORICAL GROUNDING: 9th-century Norse warrior. Not Hollywood fantasy — grounded in actual Viking age archaeology. Real materials: iron chainmail, leather gambeson, wooden shield with iron boss.
+CHARACTER: Battle-experienced. The scars are authentic. The expression is the calm of someone who has already decided the outcome.
+ARMOR DETAIL:
+  • Chainmail hauberk, aged iron with spot rust at edges
+  • Leather vambraces with hammered brass rivets
+  • Fur cloak — wolf or bear, heavy and real
+  • Iron helmet, nasal guard, NO horns (never horns — historically inaccurate)
+LIGHT: Pre-dawn before a raid. Grey dawn light from left. A longboat fire behind.
+MOOD: The calm before. Not the savage — the strategist.`,
+      ultra:`[ULTRA VIKING PORTRAIT — EPIC FANTASY FILM GRADE]
+
+PRODUCTION CONTEXT: Feature film. Director: Denis Villeneuve meets Werner Herzog. Historical accuracy + epic visual language.
+
+CHARACTER BACKGROUND:
+Jarl from Vestfold. 40 raids. Survivor of Lindisfarne. Lost half his warband at Jorvik. This is not his first photograph.
+
+COSTUME DEPARTMENT NOTES:
+  • Chainmail: Riveted iron rings, museum-reproduction quality. Darkened with age and wear.
+  • Helm: Spangenhelm style, NO wing or horn attachments. Iron cheek guards.
+  • Weapon: Bearded axe (skeggjøx), 32-inch hafted, iron head with edge grind marks.
+  • Cloak: European brown bear, pre-tanning smell almost visible.
+  • Runes: Carved into axe handle, arm band — not decorative, protective.
+  • War paint: Optional — vegetal dyes, geometric patterns at temples.
+
+ENVIRONMENT: Pre-battle dawn. Norse coast — grey sea, basalt stacks, low overcast. Longship visible in background. Campfire off-left creating warm under-rim.
+
+CINEMATOGRAPHY: ARRI Alexa mini LF with Cooke Anamorphic /i, 75mm T2.3. Scope format 2.39:1.
+
+LIGHTING: Dawn grey ambient + orange fire kicker. High contrast. The face half in grey light, half in warm fire. The division between what he's leaving and what he's heading toward.
+
+COLOR GRADE: Desaturated, lifted blacks, specific period-cold blues in shadow, ember amber in fire highlight.`
+    },
+    tips:[
+      {icon:"🪓", title:"Historically accurate detail", body:"Specify 'NO horned helmet' — horned Viking helmets are a myth. Modern models have learned this and accurate helmets actually look far more imposing."},
+      {icon:"🔥", title:"Dual light sources", body:"Combining cold grey dawn with warm fire creates the most dramatic Viking portrait lighting — it's literally the contrast between the world they're leaving and what they're riding into."}
+    ],
+    negative:"horned helmet, bright colors, Disney style, clean modern appearance, smiling, indoor studio, fantasy wings, unrealistic armor, plastic looking armor, smooth skin no scars"
+  },
+
+  // ── PRODUCT PHOTOGRAPHY ─────────────────────────────────────────────────
+  {
+    id:"prod-luxury", title:"Luxury Product Photography", category:"Product",
+    desc:"High-end commercial product photography",
+    color:"#d4a054", trending:false,
+    image:"https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=600&q=80",
+    models:["Midjourney","ChatGPT","Flux"],
+    prompts:{
+      basic:`Luxury product photography, watch or perfume bottle, dark background, studio lighting, reflective surface.`,
+      pro:`Luxury product commercial photography. Swiss mechanical watch on polished black marble surface. Single LED strip light reflection. Macro lens detail — gear teeth, crystal case back. Moody dark background with gradients. Shot on Phase One IQ4 with macro lens.`,
+      expert:`[LUXURY PRODUCT PHOTOGRAPHY — COMMERCIAL STANDARD]
+OBJECT: Premium Swiss mechanical watch, leather goods, or luxury fragrance bottle.
+SURFACE: Polished black absolute granite or liquid-surface black acrylic. The surface is a mirror.
+LIGHTING: Modified beauty dish from 45° above — single hard source that creates a dramatic highlight. A second thin strip LED on the opposite side for edge definition.
+MOOD: The object is worth more than some cars. Every specification was decided by someone with a name. Photograph it accordingly.
+REFLECTION: The object's reflection below it — perfect mirror image, slightly diffused.
+TECHNICAL: Hasselblad H6D + 120mm macro. ISO 50. 4-minute exposure if needed for absolute clarity.`,
+      ultra:`[ULTRA LUXURY PRODUCT SPEC — CAMPAIGN GRADE]
+
+OBJECT: A timepiece that took 2,400 hours to make. This photograph will run in the FT Weekend, Monocle, and the Robb Report.
+
+SURFACE ARCHITECTURE:
+Black absolute granite cut to mirror polish. Sealed with automotive-grade clear coat. Objects float on their own perfect reflection.
+Background: Gradient black to 10% mid-grey — the photographer used 12 layers of black card to create this.
+
+LIGHTING SYSTEM:
+  • Key: 150cm strip softbox, horizontal, high above and behind — creates the sweep highlight that runs the length of the watch
+  • Accent 1: Opteka 60" umbrella fill, 3 stops under key, from below horizon — fills shadow without destroying contrast
+  • Accent 2: Fiber optic pin light for crown and crown-side detail
+  • Kicker: 2cm slit in board, 3m behind object, coloured gel — creates subtle colour accent on far edge
+
+CAMERA SYSTEM: Phase One IQ4 150MP + Rodenstock HR Apo-Macro-Digaron-SE 120mm at f/5.6. 12 focus-stacked captures composited.
+
+POST: 6 hours of retouching. Surface dust removed. Reflection perfected. Material highlights sculpted. Packaging of the atmosphere itself.`
+    },
+    tips:[
+      {icon:"⌚", title:"Surface is everything", body:"The surface your product sits on creates the mood. Black granite = luxury. White studio = clinical/medical. Wooden texture = artisan/craft. Choose deliberately."},
+      {icon:"💡", title:"The strip light reflection", body:"For watches and jewelry, specify 'thin LED strip light reflection running horizontally across the surface' — this is the signature of luxury watch photography."}
+    ],
+    negative:"white background, amateur lighting, blurry, low resolution, cluttered, props, casual setting, warm filter, busy background, scratched surface"
+  },
+  {
+    id:"prod-food", title:"Food Photography", category:"Product",
+    desc:"Restaurant-grade food styling and photography",
+    color:"#f59e0b", trending:false,
+    image:"https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=600&q=80",
+    models:["Midjourney","ChatGPT","Flux"],
+    prompts:{
+      basic:`Food photography, restaurant dish, beautiful plating, natural lighting, shallow depth of field.`,
+      pro:`Professional food photography. Artisan dish beautifully plated on ceramic. Moody restaurant atmosphere — dark wooden table, ambient candle light, bokeh background. Overhead or 45° angle. Natural window light from left. Steam rising from hot dish.`,
+      expert:`[FOOD PHOTOGRAPHY — EDITORIAL RESTAURANT STANDARD]
+DISH: Carefully plated restaurant main course. Not casual — the work of an executive chef with Michelin ambitions.
+STYLING: Hero product styling. The sauce forms a deliberate swoosh. The microgreens are intentionally placed. The protein is angled to catch the light.
+SURFACE: Dark moody — black slate, aged oak, or dark ceramic.
+LIGHT: Large window from left, diffused through scrim. One reflector right. Warm, intimate, inviting. The light that makes food look edible and desirable.
+ANGLE: 45° downward — the angle of appetite.
+ATMOSPHERE: The restaurant is full but you only see this table. The evening is going well.`,
+      ultra:`[ULTRA FOOD PHOTOGRAPHY — COOKBOOK COVER GRADE]
+
+SHOOT TYPE: Editorial cookbook or premium restaurant brand campaign. Budget: $30K+ photography day.
+
+FOOD STYLIST BRIEF:
+Every gram of food is intentional. The sauce was applied with a squeeze bottle and a palette knife. The fresh herbs were chilled for 2 hours before shooting. Ice is present throughout the shoot to keep everything pristine.
+Colors: Deliberate contrast — deep brown proteins against bright acid-green garnish against pale cream plate.
+Steam: Food gently microwaved 30 seconds before each capture. Steam is real.
+
+SURFACE/PROP DIRECTION:
+Table: Hand-thrown ceramic, irregular edges, deep grey-blue glaze.
+Secondary props: Linen napkin with natural raw edge. Bronze fork and knife, aged. Glass of matching wine, out of focus background.
+Lighting practicals: One very soft candle, blurred background, warm color anchor.
+
+CAMERA:
+Hasselblad X2D 100C with XCD 120mm macro at f/4. Shot tethered to Capture One.
+Hero plate shot at 45° from front-left. Four-catch shots for component selects.
+
+LIGHTING:
+Key: 200cm Scrim Jim with diffusion, 1.5m from subject, camera-left
+Fill: 5-in-1 reflector, camera-right, 1 stop under
+Kicker: 50cm beauty dish from rear, angled to skim top surface of food
+No flash — all continuous for instant feedback
+
+EMOTION: The image should make you hungry. It should make you regret your lunch. It is an argument for being alive.`
+    },
+    tips:[
+      {icon:"🍽️", title:"45° is the appetite angle", body:"Scientific research confirms 45° downward is the angle humans perceive food as most appetising. 90° overhead looks architectural, not edible."},
+      {icon:"💨", title:"Steam changes everything", body:"Specify 'steam rising from dish' for hot foods — it adds life, warmth, and freshness signals. Note: AI models generate steam very well."}
+    ],
+    negative:"cold food looking, plastic plate, harsh flash, bright clinical lighting, overhead fluorescent, fast food aesthetic, messy plate, artificial garnish, white styrofoam"
+  },
+
+  // ── INSTAGRAM ─────────────────────────────────────────────────────────
+  {
+    id:"ig-influencer", title:"Instagram Influencer Portrait", category:"Instagram",
+    desc:"Algorithm-optimised content creator aesthetic",
+    color:"#ec4899", trending:true,
+    image:"https://images.unsplash.com/photo-1524502397800-2eeaad7c3fe5?w=600&q=80",
+    models:["Midjourney","Flux","ChatGPT"],
+    prompts:{
+      basic:`Instagram influencer portrait, lifestyle photography, golden hour, casual stylish outfit, warm tones.`,
+      pro:`Instagram lifestyle portrait. Subject in curated casual outfit — linen shirt, premium sneakers. Golden hour outdoor setting — cafe terrace, rooftop, or natural environment. Warm golden tones, bokeh background. Shot on Sony A7 50mm f/1.8. Editorial meets authentic.`,
+      expert:`[INSTAGRAM CONTENT CREATOR PORTRAIT]
+CONTEXT: This image will appear on a 200K follower Instagram account. It will be 4:5 format, appear in a curated grid, and will perform well if it triggers the aspiration + accessibility paradox.
+SUBJECT: The creator. Relatable but aspirational. Accessible but enviable. Approachable but living better than you.
+WARDROBE: Carefully curated 'casual' — everything is from a brand but nothing looks brand-new. Earth tones. Textured fabrics. Quiet luxury signaling.
+ENVIRONMENT: A location that looks effortlessly found but was scouted for 2 hours: a wall with interesting texture, a cafe with perfect light, a garden that could be anywhere expensive.
+LIGHT: Golden hour, warm, flattering. Every Instagram creator lives in golden hour.
+CAMERA: 50mm or 35mm. Shallow DOF. The background should be recognizable but not distracting.
+POST: Slightly warm preset. Consistent with the grid. Not over-edited. 'Natural' in the way a $200/month Lightroom subscription is natural.`,
+      ultra:`[ULTRA INSTAGRAM PORTRAIT — BRAND PARTNERSHIP GRADE]
+
+CONTEXT: This image is part of a paid partnership with a premium lifestyle brand. The creator has 2M followers. The image will be used as both organic content AND as a paid dark post ad. It needs to stop the scroll, generate saves, and drive click-throughs.
+
+VISUAL STRATEGY:
+The paradox of aspirational accessibility: the subject is having experiences you want, while being someone you feel you could know. The image should make the viewer feel the gap between their life and this life, while feeling small enough to bridge with a purchase.
+
+LOCATION ART DIRECTION:
+  Option A: Amalfi Coast terrace. Azure sea, bougainvillea. The trance of Mediterranean privilege.
+  Option B: Tokyo convenience store, 2am. Perfect lighting through the windows. The romance of alone-but-not-lonely.
+  Option C: Minimalist apartment with incredible natural light. The walls are the right shade of warm white.
+
+WARDROBE:
+Hero product visible but not performatively featured. The brand is there for those who notice.
+Styling: Effortful effortlessness — each piece chosen precisely.
+
+PHOTOGRAPHY:
+Nikon Z6 II, 35mm f/1.8. Shot handheld, slight imperfection reinforces authenticity.
+Light: Existing ambient — the photographer didn't bring any lights. This is the magic.
+Post: Medium-light Lightroom preset. Skin bright and clear. Shadows lifted. Saturation -5 from reality. Consistency with the grid.
+
+CAPTION DIRECTION (not in image): Will include: location tag, brand tag (subtle), question to drive comments.
+
+PERFORMANCE METRIC GOAL: 8%+ engagement rate. 10K+ saves. Brand mention in comments.`
+    },
+    tips:[
+      {icon:"📱", title:"4:5 ratio is dominant", body:"Instagram favours 4:5 (portrait) format in the feed — specify this ratio. It takes up maximum screen real estate and stops the scroll most effectively."},
+      {icon:"🌅", title:"Golden hour is algorithmic", body:"Warm golden hour tones consistently outperform cool or neutral tones on Instagram. This is documented in multiple creator studies — the algorithm responds to engagement, and warm images get more."}
+    ],
+    negative:"dark moody tones, harsh shadows, neon lights, studio flash, very cold tones, high contrast black and white, busy cityscape, unflattering pose"
+  },
+
+  // ── ANIME ─────────────────────────────────────────────────────────────
+  {
+    id:"an-mappa", title:"Anime Battle Character", category:"Anime",
+    desc:"MAPPA / Demon Slayer production quality",
+    color:"#a855f7", trending:true,
+    image:"https://images.unsplash.com/photo-1578632292335-df3abbb0d586?w=600&q=80",
+    models:["Midjourney","Stable Diffusion","Ideogram"],
+    prompts:{
+      basic:`Anime character illustration, fantasy warrior, dynamic pose, Demon Slayer style, vibrant colors.`,
+      pro:`Premium anime character art. Demon Slayer / MAPPA studio quality. Young warrior in dramatic battle pose. Detailed kimono or tactical uniform. Dynamic lighting — energy effects, speed lines. Highly detailed face with distinctive anime eyes.`,
+      expert:`[ANIME BATTLE CHARACTER — DEMON SLAYER VISUAL LANGUAGE]
+STUDIO: MAPPA, ufotable, or Kyoto Animation — production-quality key visual, not fan art.
+CHARACTER: Demon Slayer Corps member or Fantasy warrior. Young protagonist energy.
+POSE: Dynamic — combat stance or mid-technique. The body is a weapon.
+COSTUME DETAIL: Haori pattern with specific color scheme. Nichirin blade with breath effect.
+TECHNIQUE EFFECT: Total Concentration Breathing visualization — subtle color aura, atmospheric distortion.
+FACE: Characteristic anime intensity — the specific Demon Slayer face: tears of effort, biting concentration.
+BACKGROUND: Speed lines + atmospheric depth. Battle environment hinted at in background.
+QUALITY MARKERS: ufotable light quality. The specific way fire looks in KimetsuScene 1.`,
+      ultra:`[ULTRA ANIME KEY VISUAL — THEATRICAL FILM GRADE]
+
+PRODUCTION CONTEXT: This is the theatrical release poster or opening title card for a prestige anime film. Budget equivalent: KyoAni Violet Evergarden film. Visual Director: Yuki Kajiura inspired aesthetic.
+
+CHARACTER DESIGN SHEET NOTES:
+Age: 16–18. Expression: The moment before the decisive move — absolute stillness before absolute motion.
+Face: Demon Slayer formula — angular jaw, wide emotional eyes with teardrop marks if Tanjiro-coded, precise lip rendering, dramatic gradient hair.
+Hair: Multiple anime rendering passes — base color + shadow layer + specular + highlight + backlight + rim. Moves in the wind of their own intention.
+
+COSTUME BRIEF:
+Core: Traditional checkered haori pattern (unique to this character). Beneath: fitted fighting uniform, practical.
+Accessories: Breathing technique energy visualization — manifests as specific color aura (character-specific).
+Weapon: Nichirin blade with Total Concentration effect active.
+
+ENVIRONMENT:
+Location: Ruined Japanese architecture — paper screens in tatters, cherry blossoms falling (because they always fall at this moment). Moonlight from above. Fire from an unseen source below.
+
+CINEMATIC FRAMING:
+Low angle, looking up at character. Character occupies 70% of frame. Sky visible above. Dynamic composition suggests upward movement.
+
+TECHNICAL EXECUTION:
+All-digital production. Color space: DCI-P3. HDR10 target.
+Key visual compositing: 4K minimum. Character art on separate layer from background.
+Final format: 1:1.41 theatrical poster ratio.`
+    },
+    tips:[
+      {icon:"⚡", title:"Energy effects make anime", body:"Specify the power system's visual language: 'water breathing — transparent blue liquid spirals', 'flame breathing — orange-red fire dragon coils', etc. Generic glow effects look amateur."},
+      {icon:"😭", title:"Emotional intensity markers", body:"Demon Slayer-style anime is characterized by tears of effort/emotion during battle. This sounds odd but specifying 'tears in eyes during combat stance' dramatically increases the character's visual drama."}
+    ],
+    negative:"western comic style, 3D render, realistic photography, low quality sketch, simple background, mild expression, flat colors, no detail"
+  },
+
+  // ── WEDDING ─────────────────────────────────────────────────────────────
+  {
+    id:"wed-portrait", title:"Wedding Photography", category:"Wedding",
+    desc:"Timeless wedding portraits for the couple",
+    color:"#f472b6", trending:false,
+    image:"https://images.unsplash.com/photo-1519741497674-611481863552?w=600&q=80",
+    models:["Midjourney","ChatGPT","Flux"],
+    prompts:{
+      basic:`Wedding portrait, couple, white dress, outdoor setting, golden hour, romantic, soft lighting.`,
+      pro:`Romantic wedding portrait. Couple in formal attire — white wedding gown, dark suit. Golden hour outdoor — garden or estate. Soft warm backlight creating separation. Documentary + editorial blend. Shot on Canon 85mm f/1.2 at golden hour.`,
+      expert:`[WEDDING PORTRAIT — FINE ART PHOTOGRAPHY]
+STYLE: Fine art wedding photography. José Villa, Jose Villa, Ryan Flynn aesthetic — not the sharp-edged digital look, but film-like warmth and organic beauty.
+LIGHT: Golden hour backlight. The couple is slightly backlit — halos of warm light around their hair and shoulders.
+MOMENT: A specific moment — the first look. The ceremony exit. The dance where they forgot anyone was watching.
+COMPOSITION: Environmental — the couple in context, not isolated. Their world is beautiful and specific.
+FILM SIMULATION: Kodak Portra 800. Warm highlights. Lifted shadows. The way memory feels.
+EMOTION: This photograph will be on the wall in their children's home.`,
+      ultra:`[ULTRA WEDDING PORTRAIT SPEC — FINE ART EDITORIAL GRADE]
+
+PHOTOGRAPHER VOICE: José Villa's editorial calm. Vicki Grafton's luminous compositions. Jonas Peterson's documentary poetry.
+
+MOMENT SELECTION:
+The photographs that last are never the posed ones. The brief is to capture:
+  A: The private moment between portraits — when she laughs at something he said.
+  B: The ceremony — the first sight, from behind the guests, the space between them closing.
+  C: The night — the first 45 minutes when they didn't know anyone was watching.
+
+TECHNICAL:
+Medium format: Pentax 645Z + smc PENTAX-D FA 645 55mm f/2.8. The rendering of skin in this format at golden hour is unequalled in digital.
+Or: Canon 1DX Mk III with 85mm f/1.2L at f/1.4. Golden hour. Always at golden hour.
+
+LIGHT DIRECTIVE:
+Never use flash for portraits. Available light or nothing. The photographer carries a large silver reflector for fill. That's all.
+
+POST DIRECTION:
+Warmth: +15 Kelvin shift. Shadows: Lifted to match film curve. Highlights: Gentle rolloff, never clip. Skin: Accurate and warm. Saturation: -8 from camera. Film grain: 20% at ISO equivalent 1600.
+
+PRODUCT: Images that will be in a Artifact quality album. That will be the album their children show their children. That will still look current in 2065.`
+    },
+    tips:[
+      {icon:"🌅", title:"Backlight is bridal magic", body:"Backlighting at golden hour creates the 'halo' effect around white wedding dresses that makes them glow. Specify 'rim lit by golden hour backlight, sun behind subjects'."},
+      {icon:"📽️", title:"Film simulation for romance", body:"Specify Kodak Portra 800 film simulation — the elevated shadows, warm highlights and gentle grain create the romantic quality that sharp digital photography can't replicate."}
+    ],
+    negative:"flash photography, harsh shadows, cold blue tones, studio backdrop, formal stiff pose, crowds visible, dark stormy sky, editorial harsh look"
+  },
+
+  // ── SPACE ─────────────────────────────────────────────────────────────
+  {
+    id:"sp-astronaut", title:"Space Exploration Portrait", category:"Sci-Fi",
+    desc:"Astronaut portraits with NASA × SpaceX visual language",
+    color:"#6366f1", trending:false,
+    image:"https://images.unsplash.com/photo-1446776653964-20c1d3a81b06?w=600&q=80",
+    models:["Midjourney","Stable Diffusion","Leonardo"],
+    prompts:{
+      basic:`Astronaut portrait, space background, Earth visible, space suit, dramatic lighting, cinematic.`,
+      pro:`NASA-quality astronaut portrait. Subject in modern SpaceX Dragon suit or NASA Artemis suit. Earth visible through helmet visor reflection. Deep space background — stars, nebula. Cinematic film lighting. National Geographic space edition quality.`,
+      expert:`[SPACE PORTRAIT — NASA × NATIONAL GEOGRAPHIC]
+CONTEXT: A photograph that will appear alongside a National Geographic feature on the next generation of space exploration. It has to carry the weight of the endeavor.
+SUIT: Modern — SpaceX IVA suit (white and black, streamlined) or NASA xEMU moonwalk suit. Pristine. The future has arrived.
+HELMET: Visor golden tint. Earth's curvature reflected in it. The planet you left behind, visible in miniature.
+BACKGROUND: Either: deep black space with the Milky Way core visible. Or: Earth's limb from low orbit — the blue atmosphere line, sunlight at the edge.
+LIGHTING: Solar rim light from the right — hard, directional, unfiltered. Fill from Earth's albedo — cool blue-white. No atmosphere = perfect hard light.
+EMOTION: The human in the machine. The courage of it.`,
+      ultra:`[ULTRA SPACE PORTRAIT — NASA ARTEMIS CAMPAIGN GRADE]
+
+PROJECT BRIEF: This photograph will appear on the NASA website, in congressional budget materials, and eventually in a Smithsonian exhibition about the 21st century space age.
+
+SUBJECT: A crew member of the Artemis lunar mission. Age 35–45. History in the eyes — previous ISS mission, military service, the right stuff visible.
+
+SUIT SPECIFICATION:
+NASA xEMU (Exploration Extravehicular Mobility Unit). White with gold visor, US flag patch, NASA worm logo. Gloves on, helmet locked. This suit costs $1 billion.
+
+ENVIRONMENT:
+Option A: Lunar surface. Grey regolith. The Earth — huge, 4x lunar apparent size, floating above the horizon. No atmosphere, infinite star field, perfect black sky. The sun is a surgical instrument.
+Option B: ISS cupola window. Blue Earth filling the view. Subject silhouetted against it. The curve of the planet. We are so small.
+
+LIGHTING:
+Solar: 30,000× Earth surface flux. Hard, parallel, no diffusion. Creates razor shadows.
+Earthshine fill: Cool 5800K diffuse from planet below. Soft, directional, constant.
+Visor reflection: Contains the entire scene miniaturized.
+
+CAMERA:
+Hasselblad H6D onboard ISS (real ISS equipment). 50mm. 1/1000s. ISO 800. The photograph NASA will actually take.
+
+EMOTIONAL BRIEF:
+This human is further from home than any human has been since Apollo 17. The photograph should make you feel the distance. And the choice it took to go.`
+    },
+    tips:[
+      {icon:"🌍", title:"The visor reflection", body:"Specify 'Earth reflected in gold visor' — this single detail is the single most powerful space portrait element. AI models generate it beautifully and it contextualizes the entire image."},
+      {icon:"☀️", title:"Space has no atmosphere", body:"'Hard parallel solar lighting with razor-sharp shadows' is uniquely correct for space — there's no atmosphere to diffuse the sun. This accuracy makes the image feel real."}
+    ],
+    negative:"Earth-based setting, atmosphere haze, soft lighting, casual clothing, colorful background, crowded scene, modern city, indoor setting"
+  },
+  {
+    id:"sp-nebula-art", title:"Cosmic Abstract Art", category:"Sci-Fi",
+    desc:"Hubble-quality nebula and deep space art",
+    color:"#a855f7", trending:false,
+    image:"https://images.unsplash.com/photo-1543722530-d2c3201371e7?w=600&q=80",
+    models:["Midjourney","Stable Diffusion","Ideogram"],
+    prompts:{
+      basic:`Nebula space art, colorful cosmic clouds, stars, deep space, galaxy, purple and blue tones.`,
+      pro:`Hubble Space Telescope aesthetic nebula photograph. Emission nebula with ionized hydrogen clouds in crimson red and golden yellow. Massive stellar nursery with embedded proto-stars. Pillars of gas and dust. Stars sharp and bright against deep black space.`,
+      expert:`[COSMIC ART — HUBBLE × JAMES WEBB AESTHETIC]
+REFERENCE: Hubble's Pillars of Creation, Eagle Nebula; JWST's first images (Carina Nebula, Stephan's Quintet).
+OBJECT: Emission nebula — a stellar nursery. Vast cold gas and dust clouds, millions of miles across, lit from within by newly born hot stars.
+PALETTE:
+  • Hubble true-color: Hydrogen = deep crimson/salmon, Oxygen = blue/cyan, Sulfur = golden orange
+  • JWST mode: Deep infrared — gold, amber, teal, cyan against absolute black
+SCALE INDICATORS: Stars visible — a single background galaxy hinting at cosmic scale. Dust lanes creating depth and dimensionality.
+DETAIL: The turbulence of the gas — billowing, churning, photon-sculpted.
+MOOD: The universe is not indifferent. It is vast and spectacular and not thinking about you at all. That's the comfort.`,
+      ultra:`[ULTRA COSMIC IMAGE — SPACE TELESCOPE EDITORIAL GRADE]
+
+CONTEXT: This is a finalist image for the Astronomy Photographer of the Year competition at the Royal Observatory Greenwich. It will be exhibited at 2m × 2m.
+
+ASTROPHYSICS BRIEF:
+Object: A specific class of emission nebula — HII region 200 light years across. In the Cygnus X star-forming complex. Contains 100+ young hot stars (O-type and B-type), each producing intense UV radiation that ionizes surrounding hydrogen.
+
+IMAGING SYSTEM SIMULATION:
+  • Aperture: 0.7m astrograph telescope equivalent
+  • Camera: Cooled monochrome astronomical CCD at -30°C
+  • Narrowband filter set: Hα 3nm, OIII 3nm, SII 3nm
+  • Integration: 30 hours total exposure, each filter
+  • Processing: Starless background, stretched with masked curves, Hubble Palette (SHO → RGB mapping)
+
+COMPOSITIONAL DIRECTION:
+The Pillars — massive columns of dense gas and dust rising from the nebula floor, illuminated on their leading edge, dark on their trailing edge. Embedded protostars visible as bright points within.
+Background: deep black space — not grey, not navy, absolute black, with a foreground scattering of 8th-magnitude stars, and in the far corner a distant galaxy smeared to a lens shape.
+
+PALETTE (Hubble SHO):
+  • SII (sulfur) mapped to Red: warm orange-gold in dense regions
+  • Hα (hydrogen) mapped to Green: salmon-pink, dominant in ionized zones  
+  • OIII (oxygen) mapped to Blue: electric teal-cyan at the hot star boundaries
+  Blended: a unique nebula palette that no single RGB photograph achieves
+
+RESOLUTION: 30,000 × 22,000px. Print at 72" × 54" at 420dpi.`
+    },
+    tips:[
+      {icon:"🔭", title:"Hubble vs JWST palette", body:"Specify 'Hubble SHO palette' (reds, golds, blues) for classic nebula look, or 'James Webb infrared palette' (gold, amber, teal, deep blue) for the newer, more golden aesthetic. They produce dramatically different results."},
+      {icon:"⭐", title:"Pillars of Creation effect", body:"The most iconic nebula composition is tall vertical gas pillars — specify 'tall pillars of gas and dust rising from the nebula floor, lit on leading edge' for the maximum impact structure."}
+    ],
+    negative:"planets, spacecraft, realistic photography, human figures, flat colors, simple gradient, low quality, blurry, bright white background"
+  },
+
+  // ── LINKEDIN ─────────────────────────────────────────────────────────
+  {
+    id:"li-professional", title:"LinkedIn Professional Photo", category:"LinkedIn",
+    desc:"Profile photos optimised for career success",
+    color:"#0ea5e9", trending:true,
+    image:"https://images.unsplash.com/photo-1560250097-0b93528c311a?w=600&q=80",
+    models:["Midjourney","ChatGPT","Flux"],
+    prompts:{
+      basic:`LinkedIn profile photo, professional headshot, clean background, confident smile, business attire.`,
+      pro:`LinkedIn-optimized professional headshot. Business casual attire. Clean light grey or blue backdrop. Warm approachable smile, direct eye contact. Studio-quality lighting. Head-and-shoulders composition. 1:1 crop for profile circle display.`,
+      expert:`[LINKEDIN PROFILE PHOTO — CAREER SUCCESS OPTIMIZATION]
+PLATFORM CONTEXT: This image will be the first thing a recruiter, potential employer, or business partner sees. It will be displayed at sizes from 50px to 200px. It must communicate trust, competence, and approachability at all sizes.
+COMPOSITION: Head-and-shoulders. Eyes in upper third. Face occupies 70% of circle crop. Nothing important cut by the circle.
+LIGHTING: Even, flattering, professional. Two-light setup or large window + reflector. No harsh shadows. The light should reveal, not sculpt.
+BACKGROUND: Non-distracting — soft grey, warm white, muted blue, soft-focus green (outdoor). The subject is the point.
+EXPRESSION: The specific expression: warm without being unprofessional. Approachable without being casual. Direct without being intimidating. Practice in mirror.
+ATTIRE: Professional for YOUR field. Tech founders wear different professional than surgeons who wear different professional than lawyers.
+RESULT: The photo that gets callbacks.`,
+      ultra:`[ULTRA LINKEDIN PHOTO — RECRUITER A/B TEST WINNER]
+
+RESEARCH CONTEXT: LinkedIn's own research: profiles with professional photos get 14x more views, 36x more messages, and 21x more connection requests. This photograph is an asset with measurable ROI.
+
+PSYCHOLOGICAL OPTIMIZATION:
+Color theory: Blue tones in clothing and background signal competence and trustworthiness (academic research). Warm smiles signal approachability. These don't conflict — use both.
+Micro-expressions: A genuine smile (Duchenne) engages the orbicularis oculi muscle — crows feet crinkle. This is universally read as authentic. A posed smile without this is read as fake.
+Eye contact: Direct eye contact with camera = direct eye contact with the viewer = higher perceived trustworthiness.
+
+TECHNICAL:
+Camera: Sony A7R V + 85mm f/1.4 GM. f/2.0. Renders skin beautifully at shallow DOF.
+Lighting: Profoto D2 through 120cm octa, camera-left 30°. 60cm silver reflector, camera-right.
+Background: 10-foot seamless in 'Cool Grey' (Savage Paper #85).
+
+SUBJECT NOTES:
+Clothing: Industry-appropriate. If unsure: one step above average for your field.
+Hair: As you'd appear in an important meeting.
+Expression: Think of a moment when you were genuinely proud of something. Photograph that.
+
+POST: Light retouching — remove temporary blemishes, not character. Eyes: slight brightening (selective 20% luminosity). Background: even, no hot spots.
+
+DELIVERABLE: 800×800px minimum. 400KB maximum (platform compression). Square crop ready.`
+    },
+    tips:[
+      {icon:"🎯", title:"The circle crop test", body:"Before finalizing any LinkedIn prompt, specify 'face must be fully visible when image is cropped to a circle with 15% margin removed from all edges'. Most headshots fail on LinkedIn because eyes or chin get cut."},
+      {icon:"💼", title:"Industry-appropriate professional", body:"'Professional' means different things: a hospital surgeon in scrubs is professional. A San Francisco startup founder in a hoodie is professional. Specify your industry context explicitly."}
+    ],
+    negative:"distracting background, sunglasses, group photo, casual vacation photo, arms crossed aggressively, overly dark lighting, obvious filter, silly pose, party background"
+  }
+];
+
+// ════════════════════════════════════════════════════════════════════════
+// TRENDING DATA
+// ════════════════════════════════════════════════════════════════════════
+
+const TRENDING_ITEMS = [
+  { icon:"👔", name:"AI Headshots", uses:"128K copies", score:98, color:"#6366f1" },
+  { icon:"📸", name:"LinkedIn Photos", uses:"94K copies", score:94, color:"#0ea5e9" },
+  { icon:"🌸", name:"Ghibli Style", uses:"87K copies", score:91, color:"#4ade80" },
+  { icon:"🎬", name:"Cinematic Portrait", uses:"72K copies", score:88, color:"#94a3b8" },
+  { icon:"👑", name:"CEO Portrait", uses:"65K copies", score:86, color:"#f59e0b" },
+  { icon:"🌙", name:"Film Noir", uses:"58K copies", score:82, color:"#a78bfa" },
+  { icon:"⚔️", name:"Viking Warrior", uses:"51K copies", score:78, color:"#f97316" },
+  { icon:"🛸", name:"Sci-Fi Portrait", uses:"47K copies", score:75, color:"#06b6d4" },
+  { icon:"💒", name:"Wedding Photos", uses:"43K copies", score:72, color:"#f472b6" },
+  { icon:"🍽️", name:"Food Photography", uses:"38K copies", score:69, color:"#d4a054" },
+  { icon:"🛍️", name:"Product Photography", uses:"34K copies", score:65, color:"#a855f7" },
+  { icon:"🌌", name:"Space Art", uses:"29K copies", score:60, color:"#818cf8" }
+];
+
+const CAT_STATS = [
+  { icon:"🎭", name:"Headshots", count:"48 prompts", score:98 },
+  { icon:"🏢", name:"LinkedIn", count:"24 prompts", score:94 },
+  { icon:"🎬", name:"Cinematic", count:"36 prompts", score:91 },
+  { icon:"✨", name:"Fantasy", count:"42 prompts", score:88 },
+  { icon:"📱", name:"Instagram", count:"30 prompts", score:85 },
+  { icon:"🎌", name:"Anime", count:"28 prompts", score:83 },
+  { icon:"👗", name:"Editorial", count:"22 prompts", score:80 },
+  { icon:"📦", name:"Product", count:"20 prompts", score:77 }
+];
+
+const SEO_PAGES = [
+  { cat:"Headshots", title:"AI Headshot Prompts", desc:"50+ expert prompts for professional AI headshots. LinkedIn-ready, recruiter-approved.", count:"50 prompts", slug:"/ai-headshot-prompts" },
+  { cat:"LinkedIn", title:"LinkedIn Photo Prompts", desc:"Get more profile views. Prompts proven to create headshots that convert.", count:"24 prompts", slug:"/linkedin-headshot-prompts" },
+  { cat:"Headshots", title:"Doctor & Medical Prompts", desc:"Healthcare professional portrait prompts for hospital websites and GMC profiles.", count:"18 prompts", slug:"/doctor-portrait-prompts" },
+  { cat:"Headshots", title:"CEO & Founder Prompts", desc:"Power portraiture for startup founders, executives and board members.", count:"22 prompts", slug:"/ceo-portrait-prompts" },
+  { cat:"Editorial", title:"Fashion Editorial Prompts", desc:"Vogue-quality fashion prompts for editorials, lookbooks and campaigns.", count:"28 prompts", slug:"/fashion-editorial-prompts" },
+  { cat:"Fantasy", title:"Studio Ghibli Prompts", desc:"Miyazaki-quality character art. Spirited Away aesthetics in seconds.", count:"35 prompts", slug:"/ghibli-style-prompts" },
+  { cat:"Anime", title:"Anime Character Prompts", desc:"MAPPA and ufotable quality. Demon Slayer, Jujutsu Kaisen visual language.", count:"40 prompts", slug:"/anime-character-prompts" },
+  { cat:"Cinematic", title:"Film Noir Prompts", desc:"Classic Hollywood darkness. Venetian blind shadows and cigarette smoke.", count:"16 prompts", slug:"/film-noir-prompts" },
+  { cat:"Instagram", title:"Instagram Influencer Prompts", desc:"Stop the scroll. Prompts engineered for maximum engagement and saves.", count:"30 prompts", slug:"/instagram-influencer-prompts" },
+  { cat:"Product", title:"Product Photography Prompts", desc:"Commercial product photography for luxury goods, watches, jewelry and more.", count:"20 prompts", slug:"/product-photography-prompts" },
+  { cat:"Product", title:"Food Photography Prompts", desc:"Restaurant and editorial food photography. Michelin-quality plating prompts.", count:"18 prompts", slug:"/food-photography-prompts" },
+  { cat:"Wedding", title:"Wedding Photography Prompts", desc:"Fine art wedding portraits. Golden hour, film simulation, timeless couples.", count:"24 prompts", slug:"/wedding-photography-prompts" },
+  { cat:"Sci-Fi", title:"Sci-Fi & Space Prompts", desc:"Astronaut portraits, cyberpunk cities, Blade Runner aesthetics.", count:"32 prompts", slug:"/scifi-space-prompts" },
+  { cat:"Editorial", title:"Old Money Aesthetic Prompts", desc:"Heritage luxury, Ivy League estates, film photography. The real kind.", count:"14 prompts", slug:"/old-money-aesthetic-prompts" },
+  { cat:"Cinematic", title:"Cyberpunk Prompts", desc:"Blade Runner 2049 and Ghost in the Shell visual language for portraits.", count:"20 prompts", slug:"/cyberpunk-portrait-prompts" },
+  { cat:"Fantasy", title:"Viking Warrior Prompts", desc:"Historically accurate Norse warrior portraits. Epic, powerful, authentic.", count:"16 prompts", slug:"/viking-warrior-prompts" },
+  { cat:"Headshots", title:"Lawyer Portrait Prompts", desc:"Authoritative legal professional headshots for firm websites and directories.", count:"16 prompts", slug:"/lawyer-portrait-prompts" },
+  { cat:"Headshots", title:"Pilot Portrait Prompts", desc:"Aviation professional headshots — commercial pilot, military, aerospace.", count:"12 prompts", slug:"/pilot-portrait-prompts" }
+];
+
+// ════════════════════════════════════════════════════════════════════════
+// STATE
+// ════════════════════════════════════════════════════════════════════════
+
+let activeSection = 'library';
+let activeCategory = 'All';
+let selectedId = null;
+let activePromptTab = 'prompts';
+let searchQuery = '';
+let openLevels = new Set(['basic']);
+let favorites = new Set(JSON.parse(localStorage.getItem('pOS_favs') || '[]'));
+
+// ════════════════════════════════════════════════════════════════════════
+// SECTION SWITCHING
+// ════════════════════════════════════════════════════════════════════════
+
+function switchSection(name) {
+  activeSection = name;
+  document.querySelectorAll('.section-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.section-tab').forEach(t => t.classList.toggle('active', t.dataset.section === name));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  const target = document.getElementById('panel-' + name);
+  if (target) target.classList.add('active');
+
+  if (name === 'trending') renderTrending();
+  if (name === 'pages') renderSEOPages();
+}
+
+function switchCategory(cat) {
+  activeCategory = cat;
+  selectedId = null;
+  document.getElementById('prompt-panel').classList.remove('open');
+  renderCategoryPills();
+  renderGrid();
+}
+
+// ════════════════════════════════════════════════════════════════════════
+// CATEGORIES
+// ════════════════════════════════════════════════════════════════════════
+
+const CATEGORIES = ['All', ...new Set(PROMPTS.map(p => p.category))];
+
+function renderCategoryPills() {
+  const row = document.getElementById('cat-row');
+  row.innerHTML = '';
+  CATEGORIES.forEach(cat => {
+    const btn = document.createElement('button');
+    btn.className = 'cat-pill' + (cat === activeCategory ? ' active' : '');
+    btn.textContent = cat;
+    btn.onclick = () => switchCategory(cat);
+    row.appendChild(btn);
+  });
+}
+
+// ════════════════════════════════════════════════════════════════════════
+// GRID
+// ════════════════════════════════════════════════════════════════════════
+
+function getFiltered() {
+  return PROMPTS.filter(p => {
+    const matchCat = activeCategory === 'All' || p.category === activeCategory;
+    const q = searchQuery.toLowerCase();
+    const matchSearch = !q || p.title.toLowerCase().includes(q) || p.category.toLowerCase().includes(q) || p.desc.toLowerCase().includes(q);
+    return matchCat && matchSearch;
+  });
+}
+
+function renderGrid() {
+  const grid = document.getElementById('prompt-grid');
+  const filtered = getFiltered();
+  document.getElementById('result-meta').innerHTML = `<strong>${filtered.length}</strong> prompts${activeCategory !== 'All' ? ' in ' + activeCategory : ''}${searchQuery ? ' matching "' + searchQuery + '"' : ''}`;
+
+  if (filtered.length === 0) {
+    grid.innerHTML = '<div class="empty-state"><p style="font-size:32px">🔍</p><p>No prompts found. Try a different search or category.</p></div>';
+    return;
+  }
+
+  grid.innerHTML = '';
+  filtered.forEach(p => {
+    const isSel = selectedId === p.id;
+    const isFav = favorites.has(p.id);
+    const card = document.createElement('div');
+    card.className = 'p-card' + (isSel ? ' selected' : '');
+    if (isSel) {
+      card.style.borderColor = p.color + '60';
+      card.style.boxShadow = `0 0 0 1px ${p.color}30, 0 20px 50px -10px ${p.color}50`;
+    }
+    card.innerHTML = `
+      <div class="card-img">
+        <img src="${p.image}" alt="${p.title}" loading="lazy" />
+        <div class="card-overlay"></div>
+        <div class="card-badges">
+          <div class="c-badge" style="border-color:${p.color}40">
+            <div class="c-badge-dot" style="background:${p.color}"></div>
+            <span style="color:${p.color}">${p.category}</span>
+          </div>
+        </div>
+        ${p.trending ? '<div class="card-trending">🔥 Trending</div>' : ''}
+        <div class="card-check" style="background:${p.color}">✓</div>
+      </div>
+      <div class="card-body">
+        <div class="card-title">${p.title}</div>
+        <div class="card-desc">${p.desc}</div>
+        <div class="card-meta">
+          <div class="card-models">${p.models.slice(0,3).map(m=>`<span class="model-chip">${m}</span>`).join('')}</div>
+          <button class="card-fav${isFav?' faved':''}" data-id="${p.id}">♥</button>
+        </div>
+        <div class="card-cta" style="${isSel?'background:'+p.color+'15;border-color:'+p.color+'30;':''}">
+          <div class="cta-dot" style="background:${p.color}"></div>
+          <span class="cta-label" style="${isSel?'color:'+p.color:''}">${isSel ? 'Prompt Ready →' : 'View Prompts'}</span>
+        </div>
+      </div>`;
+
+    card.querySelector('.card-fav').addEventListener('click', e => {
+      e.stopPropagation();
+      toggleFav(p.id);
+    });
+
+    card.addEventListener('click', () => {
+      selectedId = selectedId === p.id ? null : p.id;
+      renderGrid();
+      updatePanel();
+    });
+
+    grid.appendChild(card);
+  });
+}
+
+// ════════════════════════════════════════════════════════════════════════
+// PANEL
+// ════════════════════════════════════════════════════════════════════════
+
+function updatePanel() {
+  const panel = document.getElementById('prompt-panel');
+  if (!selectedId) { panel.classList.remove('open'); return; }
+  const p = PROMPTS.find(x => x.id === selectedId);
+  if (!p) { panel.classList.remove('open'); return; }
+
+  panel.classList.remove('open');
+  void panel.offsetWidth;
+  panel.classList.add('open');
+
+  panel.style.borderColor = p.color + '40';
+  panel.style.boxShadow = `0 40px 80px -20px ${p.color}40`;
+
+  document.getElementById('panel-dot').style.cssText = `background:${p.color};box-shadow:0 0 12px ${p.color}`;
+  document.getElementById('panel-name').textContent = p.title;
+  document.getElementById('panel-cat-tag').textContent = p.category;
+  document.getElementById('panel-img').src = p.image;
+  document.getElementById('panel-img').alt = p.title;
+
+  // Tab colors
+  const accentTabs = ['tab-prompts','tab-tips','tab-negative'];
+  accentTabs.forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    const isActive = el.dataset.tab === activePromptTab;
+    el.style.color = isActive ? p.color : '';
+    el.style.borderColor = isActive ? p.color + '40' : '';
+    el.style.background = isActive ? p.color + '12' : '';
+    el.classList.toggle('active', isActive);
+  });
+
+  // Copy btn
+  const copyBtn = document.getElementById('copy-main-btn');
+  copyBtn.style.cssText = `border-color:${p.color};background:linear-gradient(135deg,${p.color}20,${p.color}08);color:${p.color}`;
+
+  renderPromptLevels(p);
+  renderTipsContent(p);
+  renderNegativeContent(p);
+  showPromptTab(activePromptTab);
+
+  panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function renderPromptLevels(p) {
+  const levels = [
+    { key:'basic', label:'Basic', title:'Quick Start' },
+    { key:'pro', label:'Pro', title:'Professional' },
+    { key:'expert', label:'Expert', title:'Advanced' },
+    { key:'ultra', label:'Ultra', title:'Maximum Detail' }
+  ];
+  const container = document.getElementById('tab-content-prompts');
+  container.innerHTML = '';
+  levels.forEach(lv => {
+    const text = p.prompts[lv.key] || '';
+    const isOpen = openLevels.has(lv.key);
+    const div = document.createElement('div');
+    div.className = 'prompt-level';
+    div.innerHTML = `
+      <div class="level-head" data-key="${lv.key}">
+        <div class="level-head-l">
+          <span class="level-badge ${lv.key}">${lv.label}</span>
+          <span class="level-title">${lv.title}</span>
+        </div>
+        <button class="level-copy-btn" data-text="${encodeURIComponent(text)}">⎘ Copy</button>
+      </div>
+      <div class="level-body ${isOpen ? 'open' : ''}">
+        <pre class="level-text">${escHTML(text)}</pre>
+        <div class="level-models">
+          ${p.models.map(m => `<span class="lm-tag">${m}</span>`).join('')}
+        </div>
+      </div>`;
+    div.querySelector('.level-head').addEventListener('click', e => {
+      if (e.target.classList.contains('level-copy-btn')) return;
+      openLevels.has(lv.key) ? openLevels.delete(lv.key) : openLevels.add(lv.key);
+      div.querySelector('.level-body').classList.toggle('open', openLevels.has(lv.key));
+    });
+    div.querySelector('.level-copy-btn').addEventListener('click', () => {
+      copyText(text, div.querySelector('.level-copy-btn'));
+    });
+    container.appendChild(div);
+  });
+}
+
+function renderTipsContent(p) {
+  const tips = p.tips || [];
+  const container = document.getElementById('tab-content-tips');
+  container.innerHTML = '';
+  if (!tips.length) { container.innerHTML = '<p style="color:var(--muted);font-size:12px;padding:10px;">Tips coming soon for this prompt category.</p>'; return; }
+  tips.forEach(t => {
+    const div = document.createElement('div');
+    div.className = 'tip-item';
+    div.innerHTML = `<div class="tip-title"><span>${t.icon}</span>${t.title}</div><div class="tip-body">${t.body}</div>`;
+    container.appendChild(div);
+  });
+}
+
+function renderNegativeContent(p) {
+  const neg = p.negative || '';
+  const container = document.getElementById('tab-content-negative');
+  container.innerHTML = `
+    <div style="margin-bottom:10px;font-size:11px;color:var(--muted);line-height:1.6;">Negative prompts tell the AI what to exclude. Paste this in the negative prompt field of Midjourney, Stable Diffusion, or Leonardo.</div>
+    <div class="prompt-level">
+      <div class="level-head">
+        <div class="level-head-l"><span class="level-badge basic">Negative</span><span class="level-title">Exclusion List</span></div>
+        <button class="level-copy-btn" onclick="copyText('${escAttr(neg)}', this)">⎘ Copy</button>
+      </div>
+      <div class="level-body open">
+        <pre class="level-text">${escHTML(neg)}</pre>
+      </div>
+    </div>`;
+}
+
+function showPromptTab(tab) {
+  activePromptTab = tab;
+  ['prompts','tips','negative'].forEach(t => {
+    const el = document.getElementById('tab-content-' + t);
+    if (el) el.classList.toggle('hidden', t !== tab);
+  });
+  const p = PROMPTS.find(x => x.id === selectedId);
+  if (!p) return;
+  ['tab-prompts','tab-tips','tab-negative'].forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    const isActive = el.dataset.tab === tab;
+    el.style.color = isActive ? p.color : '';
+    el.style.borderColor = isActive ? p.color + '40' : '';
+    el.style.background = isActive ? p.color + '12' : '';
+    el.classList.toggle('active', isActive);
+  });
+}
+
+// ════════════════════════════════════════════════════════════════════════
+// COPY / SHARE / FAV
+// ════════════════════════════════════════════════════════════════════════
+
+function copyText(text, btn) {
+  const decoded = text.startsWith('%') ? decodeURIComponent(text) : text;
+  const orig = btn ? btn.textContent : '';
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(decoded).then(() => showCopyFeedback(btn, orig));
+  } else {
+    const ta = document.createElement('textarea');
+    ta.value = decoded; ta.style.cssText = 'position:fixed;opacity:0';
+    document.body.appendChild(ta); ta.select();
+    try { document.execCommand('copy'); } catch(e) {}
+    document.body.removeChild(ta);
+    showCopyFeedback(btn, orig);
+  }
+  showToast('✓ Copied to clipboard');
+}
+
+function showCopyFeedback(btn, orig) {
+  if (!btn) return;
+  btn.textContent = '✓ Done';
+  setTimeout(() => btn.textContent = orig, 2500);
+}
+
+function showToast(msg) {
+  const t = document.getElementById('share-toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+function toggleFav(id) {
+  if (favorites.has(id)) favorites.delete(id);
+  else favorites.add(id);
+  localStorage.setItem('pOS_favs', JSON.stringify([...favorites]));
+  renderGrid();
+}
+
+// ════════════════════════════════════════════════════════════════════════
+// GENERATOR
+// ════════════════════════════════════════════════════════════════════════
+
+async function generatePrompts() {
+  const subject = document.getElementById('gen-subject').value.trim();
+  if (!subject) { showToast('⚠ Please describe your subject first'); return; }
+
+  const params = {
+    subject,
+    gender: document.getElementById('gen-gender').value,
+    age: document.getElementById('gen-age').value,
+    style: document.getElementById('gen-style').value,
+    camera: document.getElementById('gen-camera').value,
+    lighting: document.getElementById('gen-lighting').value,
+    environment: document.getElementById('gen-env').value,
+    mood: document.getElementById('gen-mood').value,
+    platform: document.getElementById('gen-platform').value,
+    grade: document.getElementById('gen-grade').value,
+    ratio: document.getElementById('gen-ratio').value,
+    profession: document.getElementById('gen-profession').value,
+    clothing: document.getElementById('gen-clothing').value
+  };
+
+  const btn = document.getElementById('gen-btn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner" style="width:16px;height:16px;"></span> Generating…';
+
+  const results = document.getElementById('gen-results');
+  const cards = document.getElementById('result-cards');
+  results.classList.remove('show');
+  cards.innerHTML = '<div class="loading-state"><div class="spinner"></div> Generating expert prompts…</div>';
+  results.classList.add('show');
+
+  try {
+    const sysPrompt = `You are an elite AI prompt engineer specializing in professional photography and AI image generation. Generate prompts that are production-ready, technically precise, and optimized for AI image models.
+
+TASK: Generate 4 tiers of AI image generation prompts based on user parameters.
+Return ONLY valid JSON in this exact format, no extra text:
+{
+  "basic": "one paragraph, beginner-friendly prompt",
+  "pro": "two paragraphs, professional photography spec",
+  "expert": "detailed multi-section prompt with camera, lighting, styling, mood directives",
+  "ultra": "exhaustive cinematic/editorial specification with technical crew-level detail"
+}`;
+
+    const userMsg = `Generate AI image prompts for:
+Subject: ${params.subject}
+${params.gender ? 'Gender: '+params.gender : ''}
+${params.age ? 'Age: '+params.age : ''}
+Style: ${params.style}
+${params.camera ? 'Camera: '+params.camera : ''}
+Lighting: ${params.lighting}
+Environment: ${params.environment}
+Mood: ${params.mood}
+Platform: ${params.platform}
+Color grade: ${params.grade}
+Aspect ratio: ${params.ratio}
+${params.profession ? 'Profession: '+params.profession : ''}
+${params.clothing ? 'Clothing: '+params.clothing : ''}
+
+Produce four tiers: basic, pro, expert, ultra. Return ONLY the JSON object.`;
+
+    const resp = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-6',
+        max_tokens: 1000,
+        system: sysPrompt,
+        messages: [{ role: 'user', content: userMsg }]
+      })
+    });
+
+    const data = await resp.json();
+    const rawText = data.content.map(i => i.text || '').join('');
+    const clean = rawText.replace(/```json|```/g,'').trim();
+    const parsed = JSON.parse(clean);
+
+    const lvls = [
+      { key:'basic', label:'Basic', title:'Quick Start', badge:'basic' },
+      { key:'pro', label:'Pro', title:'Professional', badge:'pro' },
+      { key:'expert', label:'Expert', title:'Advanced', badge:'expert' },
+      { key:'ultra', label:'Ultra', title:'Maximum Detail', badge:'ultra' }
+    ];
+
+    cards.innerHTML = '';
+    lvls.forEach(lv => {
+      const text = parsed[lv.key] || '';
+      const div = document.createElement('div');
+      div.className = 'result-card';
+      div.innerHTML = `
+        <div class="rc-head">
+          <div class="rc-head-l">
+            <span class="rc-level-tag level-badge ${lv.badge}">${lv.label}</span>
+            <span class="rc-title">${lv.title}</span>
+          </div>
+          <button class="rc-copy" onclick="copyText('${encodeURIComponent(text)}', this)">⎘ Copy</button>
+        </div>
+        <div class="rc-body">
+          <pre class="rc-text">${escHTML(text)}</pre>
+          <div class="rc-models">
+            ${['Midjourney','Flux','ChatGPT','Leonardo','Ideogram','Stable Diffusion'].map(m=>`<span class="lm-tag">${m}</span>`).join('')}
+          </div>
+        </div>`;
+      cards.appendChild(div);
+    });
+
+  } catch(e) {
+    cards.innerHTML = `<div style="padding:20px;color:var(--muted);font-size:13px;">Generation failed. Using template instead.<br><br>
+    <div class="result-card">
+      <div class="rc-head"><div class="rc-head-l"><span class="rc-level-tag level-badge pro">Template</span><span class="rc-title">Base Prompt</span></div><button class="rc-copy">⎘ Copy</button></div>
+      <div class="rc-body"><pre class="rc-text">${params.style} portrait of ${params.subject}. ${params.lighting}. ${params.environment}. ${params.mood} expression. ${params.camera ? 'Shot on '+params.camera+'.' : ''} ${params.grade} color grade. ${params.ratio} format. ${params.platform}-optimized.</pre></div>
+    </div></div>`;
+  }
+
+  btn.disabled = false;
+  btn.innerHTML = '⚡ Generate Expert Prompts';
+}
+
+// ════════════════════════════════════════════════════════════════════════
+// IMPROVER
+// ════════════════════════════════════════════════════════════════════════
+
+async function improvePrompt() {
+  const input = document.getElementById('improver-input').value.trim();
+  if (!input || input.length < 10) { showToast('⚠ Please enter a prompt to improve'); return; }
+
+  const btn = document.getElementById('improve-btn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner" style="width:14px;height:14px;margin-right:6px;"></span>Improving…';
+
+  const results = document.getElementById('improver-results');
+  const cards = document.getElementById('improver-cards');
+  results.classList.remove('show');
+  cards.innerHTML = '<div class="loading-state"><div class="spinner"></div> Improving your prompt…</div>';
+  results.classList.add('show');
+
+  try {
+    const sysPrompt = `You are a world-class AI prompt engineer. Your task is to take a weak or basic prompt and transform it into 4 progressively more powerful versions. Each version should be dramatically better than the previous. Return ONLY valid JSON:
+{
+  "improved": "Significantly better version — clearer, more specific",
+  "professional": "Professional photography-standard prompt with technical specs",
+  "ultra": "Expert cinematic/editorial spec with full technical detail",
+  "commercial": "Commercial/brand-ready version optimized for marketing use"
+}`;
+
+    const resp = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-6',
+        max_tokens: 1000,
+        system: sysPrompt,
+        messages: [{ role: 'user', content: `Improve this prompt in 4 tiers. Return ONLY JSON.\n\nOriginal prompt: "${input}"` }]
+      })
+    });
+
+    const data = await resp.json();
+    const rawText = data.content.map(i => i.text || '').join('');
+    const clean = rawText.replace(/```json|```/g,'').trim();
+    const parsed = JSON.parse(clean);
+
+    const lvls = [
+      { key:'improved', label:'Improved', badge:'basic', title:'Better' },
+      { key:'professional', label:'Pro', badge:'pro', title:'Professional' },
+      { key:'ultra', label:'Ultra', badge:'expert', title:'Expert' },
+      { key:'commercial', label:'Commercial', badge:'ultra', title:'Brand-Ready' }
+    ];
+
+    cards.innerHTML = '';
+    lvls.forEach(lv => {
+      const text = parsed[lv.key] || '';
+      const div = document.createElement('div');
+      div.className = 'result-card';
+      div.innerHTML = `
+        <div class="rc-head">
+          <div class="rc-head-l">
+            <span class="rc-level-tag level-badge ${lv.badge}">${lv.label}</span>
+            <span class="rc-title">${lv.title}</span>
+          </div>
+          <button class="rc-copy" onclick="copyText('${encodeURIComponent(text)}', this)">⎘ Copy</button>
+        </div>
+        <div class="rc-body">
+          <pre class="rc-text">${escHTML(text)}</pre>
+        </div>`;
+      cards.appendChild(div);
+    });
+
+  } catch(e) {
+    cards.innerHTML = '<div style="padding:20px;color:var(--muted);font-size:13px;">API unavailable. Please check your connection.</div>';
+  }
+
+  btn.disabled = false;
+  btn.innerHTML = '✨ Improve Prompt';
+}
+
+// ════════════════════════════════════════════════════════════════════════
+// TRENDING
+// ════════════════════════════════════════════════════════════════════════
+
+function renderTrending() {
+  // Prompt of the Day (deterministic by date)
+  const dayIndex = new Date().getDate() % PROMPTS.length;
+  const potd = PROMPTS[dayIndex];
+  document.getElementById('potd-title').textContent = potd.title;
+  document.getElementById('potd-desc').textContent = potd.desc + ' · ' + potd.models.slice(0,3).join(', ');
+  document.getElementById('potd-copy').onclick = () => copyText(potd.prompts.expert, null);
+
+  // Trending grid
+  const tg = document.getElementById('trend-grid');
+  tg.innerHTML = '';
+  TRENDING_ITEMS.forEach((item, i) => {
+    const div = document.createElement('div');
+    div.className = 'trend-card';
+    div.innerHTML = `
+      <div class="trend-rank">${String(i+1).padStart(2,'0')}</div>
+      <div class="trend-icon">${item.icon}</div>
+      <div class="trend-name">${item.name}</div>
+      <div class="trend-meta">${item.uses}</div>
+      <div class="trend-bar"><div class="trend-bar-fill" style="width:${item.score}%;background:${item.color}"></div></div>`;
+    div.onclick = () => { switchSection('library'); switchCategory(item.name.split(' ')[0]); };
+    tg.appendChild(div);
+  });
+
+  // Category grid
+  const cg = document.getElementById('cat-grid');
+  cg.innerHTML = '';
+  CAT_STATS.forEach((cat, i) => {
+    const div = document.createElement('div');
+    div.className = 'trend-card';
+    div.innerHTML = `
+      <div class="trend-rank">${String(i+1).padStart(2,'0')}</div>
+      <div class="trend-icon">${cat.icon}</div>
+      <div class="trend-name">${cat.name}</div>
+      <div class="trend-meta">${cat.count}</div>
+      <div class="trend-bar"><div class="trend-bar-fill" style="width:${cat.score}%;background:var(--accent)"></div></div>`;
+    div.onclick = () => { switchSection('library'); switchCategory(cat.name); };
+    cg.appendChild(div);
+  });
+}
+
+// ════════════════════════════════════════════════════════════════════════
+// SEO PAGES
+// ════════════════════════════════════════════════════════════════════════
+
+function renderSEOPages() {
+  const grid = document.getElementById('seo-grid');
+  if (grid.children.length > 0) return;
+  grid.innerHTML = '';
+  SEO_PAGES.forEach(page => {
+    const a = document.createElement('a');
+    a.className = 'seo-card';
+    a.href = '#';
+    a.innerHTML = `
+      <div class="seo-cat">${page.cat}</div>
+      <div class="seo-title">${page.title}</div>
+      <div class="seo-desc">${page.desc}</div>
+      <div class="seo-meta">
+        <span class="seo-count">${page.count}</span>
+        <span class="seo-arrow">→</span>
+      </div>`;
+    a.onclick = e => { e.preventDefault(); switchSection('library'); switchCategory(page.cat); };
+    grid.appendChild(a);
+  });
+}
+
+// ════════════════════════════════════════════════════════════════════════
+// SEARCH
+// ════════════════════════════════════════════════════════════════════════
+
+document.getElementById('search-input').addEventListener('input', e => {
+  searchQuery = e.target.value;
+  document.getElementById('search-clear').classList.toggle('visible', searchQuery.length > 0);
+  selectedId = null;
+  document.getElementById('prompt-panel').classList.remove('open');
+  renderGrid();
+});
+
+document.getElementById('search-clear').addEventListener('click', () => {
+  document.getElementById('search-input').value = '';
+  searchQuery = '';
+  document.getElementById('search-clear').classList.remove('visible');
+  renderGrid();
+});
+
+// ════════════════════════════════════════════════════════════════════════
+// PANEL EVENTS
+// ════════════════════════════════════════════════════════════════════════
+
+document.getElementById('panel-close').addEventListener('click', () => {
+  selectedId = null;
+  document.getElementById('prompt-panel').classList.remove('open');
+  renderGrid();
+});
+
+document.getElementById('copy-main-btn').addEventListener('click', () => {
+  const p = PROMPTS.find(x => x.id === selectedId);
+  if (!p) return;
+  copyText(p.prompts.expert, document.getElementById('copy-main-btn').querySelector('#copy-main-label'));
+  document.getElementById('copy-icon-sp').textContent = '✓';
+  document.getElementById('copy-main-label').textContent = 'Copied!';
+  setTimeout(() => {
+    document.getElementById('copy-icon-sp').textContent = '⎘';
+    document.getElementById('copy-main-label').textContent = 'Copy Best';
+  }, 2500);
+});
+
+document.getElementById('panel-share-btn').addEventListener('click', () => {
+  const p = PROMPTS.find(x => x.id === selectedId);
+  if (!p) return;
+  const shareText = `Check out this AI prompt: "${p.title}" — ${p.desc} | PromptOS`;
+  if (navigator.share) {
+    navigator.share({ title: p.title, text: shareText, url: window.location.href });
+  } else {
+    copyText(shareText, null);
+    showToast('✓ Share link copied');
+  }
+});
+
+document.getElementById('panel-fav-btn').addEventListener('click', () => {
+  if (selectedId) toggleFav(selectedId);
+});
+
+// Tab switching
+document.getElementById('tab-prompts').addEventListener('click', () => showPromptTab('prompts'));
+document.getElementById('tab-tips').addEventListener('click', () => showPromptTab('tips'));
+document.getElementById('tab-negative').addEventListener('click', () => showPromptTab('negative'));
+
+// Improver char count
+document.getElementById('improver-input').addEventListener('input', e => {
+  document.getElementById('char-count').textContent = e.target.value.length + ' characters';
+});
+
+// ════════════════════════════════════════════════════════════════════════
+// UTILITIES
+// ════════════════════════════════════════════════════════════════════════
+
+function escHTML(str) {
+  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+function escAttr(str) {
+  return str.replace(/'/g,'&#39;').replace(/"/g,'&quot;');
+}
+
+// ════════════════════════════════════════════════════════════════════════
+// INIT
+// ════════════════════════════════════════════════════════════════════════
+
+renderCategoryPills();
+renderGrid();
+renderTrending();
+</script>
+</body>
+</html>
